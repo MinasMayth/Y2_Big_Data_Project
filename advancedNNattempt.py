@@ -9,6 +9,9 @@ This is a simple neural network following the instructions from:
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
+#import necessary libraries
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 # Here we define the neural network
 
@@ -25,9 +28,9 @@ class NeuralNetwork():
         """
         self.inputSize = 3 # inputSize is the number of input nodes, which should be equal to the number of features in our input data
         self.outputSize = 1 # equal to the number of output nodes
-        self.hiddenSizeone = 6 # the number of nodes in the hidden layer
-        self.hiddenSizetwo = 6
-        self.hiddenSizethree = 6
+        self.hiddenSizeone = 6 # the number of nodes in the first hidden layer
+        self.hiddenSizetwo = 6 # No of nodes in the second hidden layer
+        self.hiddenSizethree = 6 #No of nodes in the third hidden layer
         
         #W1 and W2 are weights between the different nodes in our network that will be adjusted during training.
         self.W1 = np.random.rand(self.inputSize, self.hiddenSizeone)
@@ -160,8 +163,17 @@ class NeuralNetwork():
               (self.true_positives + self.true_negatives) /
               (self.true_positives + self.true_negatives +
                self.false_positives + self.false_negatives))
-
-
+    def rmse_calculator(self):
+        """
+        Calculator for root mean square error
+        """
+        actual = output_test
+        pred = [self.predict(i) for i in input_test]
+        
+        #calculate RMSE
+        rmse = sqrt(mean_squared_error(actual, pred)) 
+        return rmse
+        
 if __name__ == "__main__":
     """
     To make sure that the model is evaluated based on how good 
@@ -199,7 +211,7 @@ if __name__ == "__main__":
     
     NN = NeuralNetwork()
     NN.train(input_train_scaled, output_train_scaled, 2000)
-    NN.predict(input_pred)
+    print(NN.predict(input_pred))
     NN.view_error_development()
     NN.test_evaluation(input_test_scaled, output_test_scaled)
-    
+    print(NN.rmse_calculator())

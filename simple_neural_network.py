@@ -9,6 +9,8 @@ This is a simple neural network following the instructions from:
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 # Here we define the neural network
 
@@ -143,7 +145,17 @@ class NeuralNetwork():
               (self.true_positives + self.true_negatives) /
               (self.true_positives + self.true_negatives +
                self.false_positives + self.false_negatives))
-
+        
+    def rmse_calculator(self):
+        """
+        Calculator for root mean square error
+        """
+        actual = output_test
+        pred = [self.predict(i) for i in input_test]
+        
+        #calculate RMSE
+        rmse = sqrt(mean_squared_error(actual, pred)) 
+        return rmse
 
 if __name__ == "__main__":
     """
@@ -181,8 +193,9 @@ if __name__ == "__main__":
     
     
     NN = NeuralNetwork()
-    NN.train(input_train_scaled, output_train_scaled, 200)
-    NN.predict(input_pred)
+    NN.train(input_train_scaled, output_train_scaled, 2000)
+    print(NN.predict(input_pred))
     NN.view_error_development()
     NN.test_evaluation(input_test_scaled, output_test_scaled)
+    print(NN.rmse_calculator())
     
