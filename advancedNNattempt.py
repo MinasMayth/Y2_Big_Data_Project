@@ -29,21 +29,19 @@ class NeuralNetwork():
         This neural network has three input nodes, three nodes in the hidden 
         layer, and one output node.
         """
-        self.inputSize = 4 # inputSize is the number of input nodes, which should be equal to the number of features in our input data
+        self.inputSize = 3 # inputSize is the number of input nodes, which should be equal to the number of features in our input data
         self.outputSize = 1 # equal to the number of output nodes
-        self.hiddenSizeone = 6 # the number of nodes in the first hidden layer
-        self.hiddenSizetwo = 6 # No of nodes in the second hidden layer
-        self.hiddenSizethree = 6 #No of nodes in the third hidden layer
+        self.hiddenoneSize = 6 # the number of nodes in the first hidden layer
+        self.hiddentwoSize= 6 # No of nodes in the second hidden layer
         
         #W1 and W2 are weights between the different nodes in our network that will be adjusted during training.
-        self.W1 = np.random.rand(self.inputSize, self.hiddenSizeone)
-        self.W2 = np.random.rand(self.hiddenSizeone, self.hiddenSizetwo)
-        self.W3 = np.random.rand(self.hiddenSizetwo, self.hiddenSizethree)
-        self.W4 = np.random.rand(self.hiddenSizethree, self.outputSize)
+        self.W1 = np.random.rand(self.inputSize, self.hiddenoneSize)
+        self.W2 = np.random.rand(self.hiddenoneSize, self.hiddentwoSize)
+        self.W3 = np.random.rand(self.hiddentwoSize, self.outputSize)
         
         self.error_list = [] # will contain the mean absolute error (MAE) for each of the epochs
         
-        self.upper_limit = 1.5 # will describe the boundary for when a vector should be classified as a vector with element 10 as the first element and not
+        # will describe the boundary for when a vector should be classified as a vector with element 10 as the first element and not
         self.limit = 0.5
         
         
@@ -70,15 +68,13 @@ class NeuralNetwork():
         difference between the predicted output and the actual output, the weights will be updated 
         during backward propagation.
         """
-        self.z = np.matmul(X, self.W1) # the values at the nodes in the previous layer will be matrix multiplied with the applicable weights
-        self.z2 = self.sigmoid(self.z) # a non-linear activation function will be applied to widen the possibilities for the final output function. 
-        self.z3 = np.matmul(self.z2, self.W2)
-        self.z4 = self.sigmoid(self.z3) # In this example, we have chosen the Sigmoid as the activation function, but there are also many other alternatives.
-        self.z5 = np.matmul(self.z4, self.W3)
-        self.z6 = self.sigmoid(self.z5)
-        self.z7 = np.matmul(self.z6, self.W4)
-        o = self.sigmoid(self.z7)
-        
+        self.Z1 = np.matmul(X, self.W1) # the values at the nodes in the previous layer will be matrix multiplied with the applicable weights
+        self.A1 = self.sigmoid(self.Z1) # a non-linear activation function will be applied to widen the possibilities for the final output function. 
+        self.Z2 = np.matmul(self.A1, self.W2)
+        self.A2 = self.sigmoid(self.Z2) # In this example, we have chosen the Sigmoid as the activation function, but there are also many other alternatives.
+        self.Z3 = np.matmul(self.A2, self.W3)
+        o = self.sigmoid(self.Z3)
+
         return o
     
     def backward(self,X,y,o):
@@ -93,20 +89,15 @@ class NeuralNetwork():
         self.o_error = y - o #Output error is calculated
         self.o_delta = self.o_error * self.sigmoidPrime(o) #Multiplied by sigmoid prime
         
+        self.A2_error = np.matmul(self.o_delta, np.matrix.transpose(self.W3)) #multiplication by the tranpose of W2
+        self.A2_delta = self.A2_error * self.sigmoidPrime(self.A2) #Multiplied by sigmoid prime
         
-        self.z6_error = np.matmul(self.o_delta, np.matrix.transpose(self.W4)) #multiplication by the tranpose of W2
-        self.z6_delta = self.z6_error * self.sigmoidPrime(self.z6) #Multiplied by sigmoid prime
+        self.A1_error = np.matmul(self.A2_delta, np.matrix.transpose(self.W2)) #multiplication by the tranpose of W2
+        self.A1_delta = self.A1_error * self.sigmoidPrime(self.A1) #Multiplied by sigmoid prime
         
-        self.z4_error = np.matmul(self.z6_delta, np.matrix.transpose(self.W3)) #multiplication by the tranpose of W2
-        self.z4_delta = self.z4_error * self.sigmoidPrime(self.z4) #Multiplied by sigmoid prime
-        
-        self.z2_error = np.matmul(self.z4_delta, np.matrix.transpose(self.W2)) #multiplication by the tranpose of W2
-        self.z2_delta = self.z2_error * self.sigmoidPrime(self.z2) #Multiplied by sigmoid prime
-        
-        self.W1 += np.matmul(np.matrix.transpose(X), self.z2_delta) #W1 Updated
-        self.W2 += np.matmul(np.matrix.transpose(self.z2), self.z4_delta) #W2 Updated
-        self.W3 += np.matmul(np.matrix.transpose(self.z4), self.z6_delta) #W2 Updated
-        self.W4 += np.matmul(np.matrix.transpose(self.z6), self.o_delta) #W2 Updated
+        self.W1 += np.matmul(np.matrix.transpose(X), self.A1_delta) #W1 Updated
+        self.W2 += np.matmul(np.matrix.transpose(self.A1), self.A2_delta) #W2 Updated
+        self.W3 += np.matmul(np.matrix.transpose(self.A2), self.o_delta) #W2 Updated
         
     def train(self,X,y,epochs):
         """
@@ -193,7 +184,7 @@ if __name__ == "__main__":
     datasets into one training set and one test set (and 
     sometimes a validation set).
     """
-    
+    """
     iris = datasets.load_iris()
     X = iris.data # we only take the first two features.
     y = iris.target.reshape(-1,1)
@@ -203,6 +194,8 @@ if __name__ == "__main__":
     input_pred = np.array([6,3,5,2])
 
     """
+    input_pred = np.array([1, 1, 0])
+    
     input_train = np.array([[0, 1, 0], [0, 1, 1], [0, 0, 0], 
                             [10, 0, 0], [10, 1, 1], [10, 0, 1]])
     
@@ -213,7 +206,7 @@ if __name__ == "__main__":
                            [10, 1, 10], [0, 0, 0], [0, 1, 1]])
     
     output_test = np.array([[0], [1], [0], [1], [0], [0]])
-    """
+    
     
     """
     This MinMaxScaler scales and translates each feature individually 
