@@ -184,16 +184,6 @@ if __name__ == "__main__":
     datasets into one training set and one test set (and 
     sometimes a validation set).
     """
-    """
-    iris = datasets.load_iris()
-    X = iris.data # we only take the first two features.
-    y = iris.target.reshape(-1,1)
-    
-    input_train, input_test, output_train, output_test = train_test_split(X, y, test_size=0.33)
-    
-    input_pred = np.array([6,3,5,2])
-
-    """
     input_pred = np.array([1, 1, 0])
     
     input_train = np.array([[0, 1, 0], [0, 1, 1], [0, 0, 0], 
