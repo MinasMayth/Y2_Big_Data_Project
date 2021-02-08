@@ -9,9 +9,12 @@ This is a simple neural network following the instructions from:
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-#import necessary libraries
 from sklearn.metrics import mean_squared_error
 from math import sqrt
+from sklearn import datasets
+import numpy as np
+from sklearn.model_selection import train_test_split
+
 
 # Here we define the neural network
 
@@ -26,7 +29,7 @@ class NeuralNetwork():
         This neural network has three input nodes, three nodes in the hidden 
         layer, and one output node.
         """
-        self.inputSize = 3 # inputSize is the number of input nodes, which should be equal to the number of features in our input data
+        self.inputSize = 4 # inputSize is the number of input nodes, which should be equal to the number of features in our input data
         self.outputSize = 1 # equal to the number of output nodes
         self.hiddenSizeone = 6 # the number of nodes in the first hidden layer
         self.hiddenSizetwo = 6 # No of nodes in the second hidden layer
@@ -39,7 +42,11 @@ class NeuralNetwork():
         self.W4 = np.random.rand(self.hiddenSizethree, self.outputSize)
         
         self.error_list = [] # will contain the mean absolute error (MAE) for each of the epochs
-        self.limit = 0.5 # will describe the boundary for when a vector should be classified as a vector with element 10 as the first element and not
+        
+        self.upper_limit = 1.5 # will describe the boundary for when a vector should be classified as a vector with element 10 as the first element and not
+        self.limit = 0.5
+        
+        
         
         # variables that will be used to store the number of true positives, false positives, true negatives, and false negatives.
         self.true_positives = 0
@@ -140,11 +147,14 @@ class NeuralNetwork():
         points. In binary classification tasks, these new data points can only be 1 or 0. Depending 
         on whether the predicted value is above or below the defined limit, the algorithm will classify 
         the new entry as 1 or 0.
+        
+        Update 06/02/21: Am trying to shift this from binary classification to one that fits the 
+        iris dataset.
 
         """
         for i, test_element in enumerate(input_test):
             if self.predict(test_element) > self.limit and \
-                output_test[i] == 1:
+                output_test[i] == 2:
                     self.true_positives += 1
             if self.predict(test_element) < self.limit and \
                 output_test[i] == 1:
@@ -155,6 +165,7 @@ class NeuralNetwork():
             if self.predict(test_element) < self.limit and \
                 output_test[i] == 0:
                     self.true_negatives += 1
+                    
         print('True positives: ', self.true_positives,
               '\nTrue negatives: ', self.true_negatives,
               '\nFalse positives: ', self.false_positives,
@@ -183,17 +194,26 @@ if __name__ == "__main__":
     sometimes a validation set).
     """
     
+    iris = datasets.load_iris()
+    X = iris.data # we only take the first two features.
+    y = iris.target.reshape(-1,1)
+    
+    input_train, input_test, output_train, output_test = train_test_split(X, y, test_size=0.33)
+    
+    input_pred = np.array([6,3,5,2])
+
+    """
     input_train = np.array([[0, 1, 0], [0, 1, 1], [0, 0, 0], 
                             [10, 0, 0], [10, 1, 1], [10, 0, 1]])
     
     output_train = np.array([[0], [0], [0], [1], [1], [1]])
     
-    input_pred = np.array([1, 1, 0])
     
     input_test = np.array([[1, 1, 1], [10, 0, 1], [0, 1, 10], 
                            [10, 1, 10], [0, 0, 0], [0, 1, 1]])
     
     output_test = np.array([[0], [1], [0], [1], [0], [0]])
+    """
     
     """
     This MinMaxScaler scales and translates each feature individually 
@@ -208,10 +228,9 @@ if __name__ == "__main__":
     output_test_scaled = scaler.fit_transform(output_test)
     
     
-    
     NN = NeuralNetwork()
-    NN.train(input_train_scaled, output_train_scaled, 2000)
-    print(NN.predict(input_pred))
+    NN.train(input_train_scaled, output_train_scaled, 200)
+    print("Prediction at",input_pred, ":", round(NN.predict(input_pred),5))
     NN.view_error_development()
     NN.test_evaluation(input_test_scaled, output_test_scaled)
-    print(NN.rmse_calculator())
+    print("RMSE:",NN.rmse_calculator())
