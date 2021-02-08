@@ -146,7 +146,7 @@ class NeuralNetwork():
               (self.true_positives + self.true_negatives +
                self.false_positives + self.false_negatives))
         
-    def rmse_calculator(self):
+    def rmse_calculator(self, input_test, output_test):
         """
         Calculator for root mean square error
         """
@@ -197,5 +197,5 @@ if __name__ == "__main__":
     print(NN.predict(input_pred))
     NN.view_error_development()
     NN.test_evaluation(input_test_scaled, output_test_scaled)
-    print(NN.rmse_calculator())
+    print(NN.rmse_calculator(input_test_scaled, output_test_scaled))
     

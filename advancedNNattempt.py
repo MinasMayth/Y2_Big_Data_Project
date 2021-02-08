@@ -20,8 +20,6 @@ from sklearn.model_selection import train_test_split
 
 class NeuralNetwork():
     
-    
-    
     def __init__(self,):
         """
         The __init__ function will initialize the variables we need for working
@@ -129,6 +127,7 @@ class NeuralNetwork():
         plt.title("Mean Sum Squared Loss")
         plt.xlabel("Epoch")
         plt.ylabel("Loss")
+        plt.show()
         
     def test_evaluation(self, input_test, output_test):
         """
@@ -138,9 +137,6 @@ class NeuralNetwork():
         points. In binary classification tasks, these new data points can only be 1 or 0. Depending 
         on whether the predicted value is above or below the defined limit, the algorithm will classify 
         the new entry as 1 or 0.
-        
-        Update 06/02/21: Am trying to shift this from binary classification to one that fits the 
-        iris dataset.
 
         """
         for i, test_element in enumerate(input_test):
@@ -175,6 +171,7 @@ class NeuralNetwork():
         #calculate RMSE
         rmse = sqrt(mean_squared_error(actual, pred)) 
         return rmse
+    
         
 if __name__ == "__main__":
     """
