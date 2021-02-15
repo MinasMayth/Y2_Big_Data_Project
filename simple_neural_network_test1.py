@@ -8,10 +8,12 @@ This is a simple neural network following the instructions from:
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
 import matplotlib.pyplot as plt
 import datetime as dt
+from sklearn.metrics import classification_report,confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
 
 #working data file
 data = pd.read_csv("owid-covid-data.csv")
@@ -199,16 +201,23 @@ if __name__ == "__main__":
     between zero and one. 
     """
     
-    scaler = MinMaxScaler()
+    scaler = StandardScaler()
+    scaler.fit(input_train)
     input_train_scaled = scaler.fit_transform(input_train)
-    output_train_scaled = scaler.fit_transform(output_train)
+    #output_train_scaled = scaler.fit_transform(output_train)
     input_test_scaled = scaler.fit_transform(input_test)
-    output_test_scaled = scaler.fit_transform(output_test)
-    
+    #output_test_scaled = scaler.fit_transform(output_test)
     
     
     NN = NeuralNetwork()
-    NN.train(input_train_scaled, output_train_scaled, 20)
+    NN.train(input_train_scaled, output_train, 20000)
     NN.view_error_development()
     #NN.test_evaluation(input_test_scaled, output_test_scaled)
     
+    #SKLearn NN section
+    mlp = MLPClassifier(hidden_layer_sizes=(20),max_iter=20000, activation='logistic')
+    mlp.fit(input_train_scaled,output_train)
+    predictions = mlp.predict(input_test_scaled)
+    
+    print(confusion_matrix(output_test,predictions))
+    print(classification_report(output_test,predictions))
