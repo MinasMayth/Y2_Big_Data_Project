@@ -14,7 +14,7 @@ import datetime as dt
 from sklearn.model_selection import train_test_split
 
 #working data file
-data = pd.read_csv(r"C:\Users\samya\Documents\Github-Repos\BitsandBobs\owid-covid-data.csv")
+data = pd.read_csv("owid-covid-data.csv")
 
 
 # Here we define the neural network
@@ -56,14 +56,14 @@ class NeuralNetwork():
         difference between the predicted output and the actual output, the weights will be updated 
         during backward propagation.
         """
-        self.z = np.matmul(X, self.W1) # the values at the nodes in the previous layer will be matrix multiplied with the applicable weights
-        self.z2 = self.sigmoid(self.z) # a non-linear activation function will be applied to widen the possibilities for the final output function. 
-        self.z3 = np.matmul(self.z2, self.W2)
-        o = self.sigmoid(self.z3) # In this example, we have chosen the Sigmoid as the activation function, but there are also many other alternatives.
+        self.Z1 = np.matmul(X, self.W1) # the values at the nodes in the previous layer will be matrix multiplied with the applicable weights
+        self.A1 = self.sigmoid(self.Z1) # a non-linear activation function will be applied to widen the possibilities for the final output function. 
+        self.Z2 = np.matmul(self.A1, self.W2)
+        o = self.sigmoid(self.Z2) # In this example, we have chosen the Sigmoid as the activation function, but there are also many other alternatives.
         return o
     
     
-    # Sigmoid Activation function
+    # Sigmoid Activation function - we can think of adding other ones here!
     def sigmoid(self,s):
         return 1/(1 + np.exp(-s))
     
@@ -81,12 +81,12 @@ class NeuralNetwork():
         """
         self.o_error = y - o #Output error is calculated
         self.o_delta = self.o_error * self.sigmoidPrime(o) #Multiplied by sigmoid prime
-        self.z2_error = np.matmul(self.o_delta,
-                                  np.matrix.transpose(self.W2)) #Matrix multiplication again
-        self.z2_delta = self.z2_error * self.sigmoidPrime(self.z2) #Multiplied by sigmoid prime
-        self.W1 += np.matmul(np.matrix.transpose(X), self.z2_delta) #W1 Updated
-        self.W2 += np.matmul(np.matrix.transpose(self.z2), 
-                             self.o_delta) #W2 Updated
+        
+        self.A1_error = np.matmul(self.o_delta, np.matrix.transpose(self.W2)) #multiplication by the tranpose of W2
+        self.A1_delta = self.A1_error * self.sigmoidPrime(self.A1) #Multiplied by sigmoid prime
+
+        self.W1 += np.matmul(np.matrix.transpose(X), self.A1_delta) #W1 Updated
+        self.W2 += np.matmul(np.matrix.transpose(self.A1), self.o_delta) #W2 Updated
         
     def train(self,X,y,epochs):
         """
@@ -181,12 +181,16 @@ if __name__ == "__main__":
     ax.set_xlabel("Date")
     ax.set_ylabel("Number of People")
     ax.legend()
-    plt.title("Number of hospital patients vs Number of cases")
+    plt.title("Number of hospital patients vs Number of new tests vs Number of cases on a Time Scale")
     plt.show()
+    
+    plt.scatter(y2[0],y2[1])
+    plt.show()
+    plt.title("Number of hospital patients vs Number of new tests")
     
     y2 = y2.transpose()
     
-    input_train, input_test, output_train, output_test = train_test_split(y2, y, test_size=0.33, random_state=42)
+    input_train, input_test, output_train, output_test = train_test_split(y2, y, test_size=0.33)
 
     
     """
@@ -204,7 +208,8 @@ if __name__ == "__main__":
     
     
     NN = NeuralNetwork()
-    NN.train(input_train_scaled, output_train_scaled, 20000)
+    NN.train(input_train_scaled, output_train_scaled, 20)
     NN.view_error_development()
+    NN.predict([11896,12597])
     #NN.test_evaluation(input_test_scaled, output_test_scaled)
     
