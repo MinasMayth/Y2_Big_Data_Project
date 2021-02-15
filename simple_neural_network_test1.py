@@ -210,7 +210,5 @@ if __name__ == "__main__":
     NN = NeuralNetwork()
     NN.train(input_train_scaled, output_train_scaled, 20)
     NN.view_error_development()
-    NN.predict([11896overflow encountered in exp
-  return 1/(1 + np.exp(-s)),12597])
     #NN.test_evaluation(input_test_scaled, output_test_scaled)
     
