@@ -210,12 +210,12 @@ if __name__ == "__main__":
     
     
     NN = NeuralNetwork()
-    NN.train(input_train_scaled, output_train, 20000)
+    NN.train(input_train_scaled, output_train, 2000)
     NN.view_error_development()
     #NN.test_evaluation(input_test_scaled, output_test_scaled)
     
     #SKLearn NN section
-    mlp = MLPClassifier(hidden_layer_sizes=(20),max_iter=20000, activation='logistic')
+    mlp = MLPClassifier(hidden_layer_sizes=(20,20,20),max_iter=2000, activation='relu', verbose=True, solver = 'sgd',learning_rate='adaptive')
     mlp.fit(input_train_scaled,output_train)
     predictions = mlp.predict(input_test_scaled)
     
