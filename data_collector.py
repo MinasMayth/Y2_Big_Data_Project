@@ -27,7 +27,7 @@ for file in files:
         df = pd.read_csv(file, error_bad_lines=False, infer_datetime_format=True)
         dataframes.append(df)
 
-owid_global_data = dataframes[3]
+owid_global_data = dataframes[4]
 
 for date in range (30,31):
     current_clustering_data = owid_global_data.loc[(owid_global_data.date == '2021-01-'+str(date))]
@@ -36,6 +36,7 @@ for date in range (30,31):
     country_ratios = []
     x_axis = []
     y_axis = []
+    country_densities = []
     
     continents = ['North America','South America','Europe','Africa','Asia','World', 'Oceania']
     
@@ -48,16 +49,17 @@ for date in range (30,31):
             
             x_axis.append(country['population'])
             y_axis.append(country['total_tests'])
+            
+            country_densities.append(country['population_density'])
         
     
     
-    countrys_tup = list(zip(country_names, country_ratios))
+    countrys_tup = list(zip(country_names, country_ratios, country_densities))
     points = list(zip(x_axis,y_axis))
     
     #Removing all points that have invalid values
     country_tup_filtered = [value for value in countrys_tup if math.isnan(value[1]) == False]
     points_filtered = np.array([value for value in points if math.isnan(value[1]) == False])
-    
     
     #Initial graph
     plt.scatter([x[0] for x in points_filtered], [x[1] for x in points_filtered])
@@ -102,3 +104,15 @@ for coordinate, label in zip(points_filtered, [country[0] for country in country
     plt.annotate(xy=coordinate, text=label)
 
 plt.show()
+
+
+
+
+plt.scatter([i[2] for i in country_tup_filtered], [i[1] for i in country_tup_filtered])
+plt.xlabel('Population Density')
+plt.ylabel('Tests/Population')
+
+for x, y, label in zip([i[2] for i in country_tup_filtered], [i[1] for i in country_tup_filtered], [i[0] for i in country_tup_filtered]):
+    plt.text(x,y,s=label)
+
+plt.show

@@ -52,11 +52,26 @@ plt.xlabel('Population')
 for x, y, label in zip([x[1] for x in state_values], [x[3] for x in state_values], [x[0] for x in state_values]):
     plt.text(x, y , s=label)
     
-#Initial graph
 plt.scatter([x[1] for x in state_values], [x[3] for x in state_values], label="Total Tests")
 plt.ylabel('Confirmed/Total Tested')
+
 plt.legend()
 plt.show()
+
+
+ratios = [value[2]/value[3] for value in state_values]
+
+plt.scatter([x[1] for x in state_values], ratios)
+
+plt.xlabel('Population')
+for x, y, label in zip([x[1] for x in state_values], ratios, [x[0] for x in state_values]):
+    plt.text(x, y , s=label)
+    
+plt.ylabel('Confirmed/Total Tested RATIO')
+
+plt.show()
+
+
 
 fields = ['State', 'Population', 'Confirmed Infections', 'Total Tested'] 
 
