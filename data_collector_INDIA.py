@@ -7,6 +7,7 @@ Created on Thu Feb 18 11:58:08 2021
 
 import glob
 import os
+import csv
 import math
 import pandas as pd
 import numpy as np
@@ -45,22 +46,25 @@ for pstate in state_pop:
         
         
 #Initial graph
-plt.scatter([x[1] for x in state_values], [x[2] for x in state_values])
-plt.xlabel('Population')
-plt.ylabel('Confirmed Infections')
-for x, y, label in zip([x[1] for x in state_values], [x[2] for x in state_values], [x[0] for x in state_values]):
-    plt.text(x, y , s=label)
-        
-plt.show()
+plt.scatter([x[1] for x in state_values], [x[2] for x in state_values], label="Confirmed Cases")
 
-
-#Initial graph
-plt.scatter([x[1] for x in state_values], [x[3] for x in state_values])
 plt.xlabel('Population')
-plt.ylabel('Total Tested')
 for x, y, label in zip([x[1] for x in state_values], [x[3] for x in state_values], [x[0] for x in state_values]):
     plt.text(x, y , s=label)
-        
+    
+#Initial graph
+plt.scatter([x[1] for x in state_values], [x[3] for x in state_values], label="Total Tests")
+plt.ylabel('Confirmed/Total Tested')
+plt.legend()
 plt.show()
 
+fields = ['State', 'Population', 'Confirmed Infections', 'Total Tested'] 
+
+with open('india_combined_data.csv', 'w') as f: 
+      
+    # using csv.writer method from CSV package 
+    write = csv.writer(f) 
+      
+    write.writerow(fields) 
+    write.writerows(state_values) 
 
