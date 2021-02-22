@@ -27,5 +27,10 @@ for file in files:
         df = pd.read_csv(file, error_bad_lines=False, infer_datetime_format=True)
         dataframes.append(df)
 
-india_1 = dataframes[4]
-india_2 = dataframes[5]
+india_1 = dataframes[1]
+india_2 = dataframes[2]
+india_3 = dataframes[6]
+india_4 = dataframes[7]
+
+state_pop = [(state['State'], state['Population']) for i, state in india_1.iterrows()]
+territory_pop = [(territory['Union Territories'], territory['Population']) for i, territory in india_2.iterrows()]
