@@ -63,12 +63,10 @@ for date in range (30,31):
     points_filtered = np.array([value for value in points if math.isnan(value[1]) == False])
     
     
-    
-    xs = [x[0] for x in points_filtered]
-    ys = [x[1] for x in points_filtered]
-    
     #Initial graph
-    plt.scatter(xs, ys)
+    plt.scatter([x[0] for x in points_filtered], [x[1] for x in points_filtered])
+    plt.xlabel('Population')
+    plt.ylabel('Total Tests')
     for coordinate, label in zip(points_filtered, [country[0] for country in country_tup_filtered]):
         plt.annotate(xy=coordinate, text=label)
         
@@ -90,6 +88,8 @@ plt.scatter(points_filtered[y_km ==0,0], points_filtered[y_km == 0,1], s=100, c=
 plt.scatter(points_filtered[y_km ==1,0], points_filtered[y_km == 1,1], s=100, c='black')
 plt.scatter(points_filtered[y_km ==2,0], points_filtered[y_km == 2,1], s=100, c='blue')
 plt.scatter(points_filtered[y_km ==3,0], points_filtered[y_km == 3,1], s=100, c='cyan')
+plt.xlabel('Population')
+plt.ylabel('Total Tests')
 
 plt.show()
 
@@ -98,6 +98,9 @@ plt.scatter(points_filtered[y_km ==0,0], points_filtered[y_km == 0,1], s=100, c=
 plt.scatter(points_filtered[y_km ==1,0], points_filtered[y_km == 1,1], s=100, c='black')
 plt.scatter(points_filtered[y_km ==2,0], points_filtered[y_km == 2,1], s=100, c='blue')
 plt.scatter(points_filtered[y_km ==3,0], points_filtered[y_km == 3,1], s=100, c='cyan')
+plt.xlabel('Population')
+plt.ylabel('Total Tests')
+
 
 for coordinate, label in zip(points_filtered, [country[0] for country in country_tup_filtered]):
     plt.annotate(xy=coordinate, text=label)
