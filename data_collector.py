@@ -58,6 +58,7 @@ for date in range (30,31):
     countrys_tup = list(zip(country_names, country_ratios))
     points = list(zip(x_axis,y_axis))
     
+    #Removing all points that have invalid values
     country_tup_filtered = [value for value in countrys_tup if math.isnan(value[1]) == False]
     points_filtered = np.array([value for value in points if math.isnan(value[1]) == False])
     
@@ -66,6 +67,7 @@ for date in range (30,31):
     xs = [x[0] for x in points_filtered]
     ys = [x[1] for x in points_filtered]
     
+    #Initial graph
     plt.scatter(xs, ys)
     for coordinate, label in zip(points_filtered, [country[0] for country in country_tup_filtered]):
         plt.annotate(xy=coordinate, text=label)
@@ -83,6 +85,15 @@ print(kmeans.cluster_centers_)
 # save new clusters for chart
 y_km = kmeans.fit_predict(points_filtered)   
 
+#Without labels
+plt.scatter(points_filtered[y_km ==0,0], points_filtered[y_km == 0,1], s=100, c='red')
+plt.scatter(points_filtered[y_km ==1,0], points_filtered[y_km == 1,1], s=100, c='black')
+plt.scatter(points_filtered[y_km ==2,0], points_filtered[y_km == 2,1], s=100, c='blue')
+plt.scatter(points_filtered[y_km ==3,0], points_filtered[y_km == 3,1], s=100, c='cyan')
+
+plt.show()
+
+#With labels
 plt.scatter(points_filtered[y_km ==0,0], points_filtered[y_km == 0,1], s=100, c='red')
 plt.scatter(points_filtered[y_km ==1,0], points_filtered[y_km == 1,1], s=100, c='black')
 plt.scatter(points_filtered[y_km ==2,0], points_filtered[y_km == 2,1], s=100, c='blue')
