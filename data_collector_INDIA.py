@@ -28,9 +28,39 @@ for file in files:
         dataframes.append(df)
 
 india_1 = dataframes[1]
-india_2 = dataframes[2]
+india_2 = dataframes[5]
 india_3 = dataframes[6]
-india_4 = dataframes[7]
 
-state_pop = [(state['State'], state['Population']) for i, state in india_1.iterrows()]
-territory_pop = [(territory['Union Territories'], territory['Population']) for i, territory in india_2.iterrows()]
+
+illegal = ['2011', 'India', 'Total', 'State Unassigned']
+state_pop = [(state['State/UT'], state['Population']) for i, state in india_1.iterrows() if state['State/UT'] not in illegal ]
+state_infections = [(state['State'], state['Confirmed']) for i, state in india_3.iterrows() if state['State'] not in illegal]
+state_tests = [(state['State'], state['Total Tested']) for i, state in india_2.iterrows() if state['Updated On'] == '14/02/2021']
+
+state_values = []
+
+for pstate in state_pop:
+    if pstate[0] in [istate[0] for istate in state_infections] and pstate[0] in [tstate[0] for tstate in state_tests]:
+        state_values.append(([pstate[0], pstate[1], [i[1] for i in state_infections if i[0]==pstate[0]][0], [i[1] for i in state_tests if i[0]==pstate[0]][0]]))
+        
+        
+#Initial graph
+plt.scatter([x[1] for x in state_values], [x[2] for x in state_values])
+plt.xlabel('Population')
+plt.ylabel('Confirmed Infections')
+for x, y, label in zip([x[1] for x in state_values], [x[2] for x in state_values], [x[0] for x in state_values]):
+    plt.text(x, y , s=label)
+        
+plt.show()
+
+
+#Initial graph
+plt.scatter([x[1] for x in state_values], [x[3] for x in state_values])
+plt.xlabel('Population')
+plt.ylabel('Total Tested')
+for x, y, label in zip([x[1] for x in state_values], [x[3] for x in state_values], [x[0] for x in state_values]):
+    plt.text(x, y , s=label)
+        
+plt.show()
+
+
