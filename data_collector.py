@@ -27,14 +27,10 @@ for file in files:
         df = pd.read_csv(file, error_bad_lines=False, infer_datetime_format=True)
         dataframes.append(df)
 
-global_data = dataframes[3]
-
-print(global_data.head())
-
-
+owid_global_data = dataframes[3]
 
 for date in range (30,31):
-    current_clustering_data = global_data.loc[(global_data.date == '2021-01-'+str(date))]
+    current_clustering_data = owid_global_data.loc[(owid_global_data.date == '2021-01-'+str(date))]
     
     country_names = []
     country_ratios = []
