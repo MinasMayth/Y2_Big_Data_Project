@@ -59,7 +59,7 @@ plt.legend()
 plt.show()
 
 
-ratios = [value[2]/value[3] for value in state_values]
+ratios = [value[3]/value[2] for value in state_values]
 
 plt.scatter([x[1] for x in state_values], ratios)
 
@@ -67,7 +67,7 @@ plt.xlabel('Population')
 for x, y, label in zip([x[1] for x in state_values], ratios, [x[0] for x in state_values]):
     plt.text(x, y , s=label)
     
-plt.ylabel('Confirmed/Total Tested RATIO')
+plt.ylabel('Total Tested/Confirmed RATIO')
 
 plt.show()
 
