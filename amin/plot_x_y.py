@@ -19,6 +19,9 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(z,y)
 print(slope, intercept, r_value, p_value, std_err)
 
 
+print("correlation coefficient:",r_value)
+print("p-value:",p_value)
+
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 #ax2 = ax1.twinx()
