@@ -12,13 +12,13 @@ from sklearn.linear_model import LinearRegression
 ### DATA COLLECTION SECTION ###
 
  # Contains population and population density data
-india_pop_csv = pd.read_csv(r"Project Data\India_states_population_data.csv", error_bad_lines=False, infer_datetime_format=True)
+india_pop_csv = pd.read_csv(r"India_states_population_data.csv", error_bad_lines=False, infer_datetime_format=True)
 
  # Contains testing data
-india_tests_csv = pd.read_csv(r"Project Data\statewise_tested_numbers_data_INDIA.csv", error_bad_lines=False, infer_datetime_format=True)
+india_tests_csv = pd.read_csv(r"statewise_tested_numbers_data_INDIA.csv", error_bad_lines=False, infer_datetime_format=True)
 
  # Contains data for confirmed, recovered, deaths
-india_cases_csv = pd.read_csv(r"Project Data\state_wise_india.csv", error_bad_lines=False, infer_datetime_format=True)
+india_cases_csv = pd.read_csv(r"state_wise_india.csv", error_bad_lines=False, infer_datetime_format=True)
 
  # These are values contained in the data that do not represent a specific state - therefore they are cleaned from it
 illegal = ['2011', 'India', 'Total', 'State Unassigned']
