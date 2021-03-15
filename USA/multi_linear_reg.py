@@ -139,5 +139,8 @@ ax = fig.gca(projection ='3d')
 ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), Y2.astype(int), label ='y') 
 ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), predictions.astype(int), label='predicted')
 ax.legend()
+ax.set_xlabel('Population', fontsize=12)
+ax.set_ylabel('Tests', fontsize=12)
+ax.set_zlabel('Actual cases', fontsize=12)
 plt.show() 
 
