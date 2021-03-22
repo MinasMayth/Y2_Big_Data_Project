@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Multilinear Regression\US States Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Multilinear Regression\europe.csv">
           <value>
             <Attribute>
