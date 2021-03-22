@@ -65,11 +65,12 @@ def graph_plotter(Xvar, Yvar):
 
 
 
-data = pd.read_csv(r'state cases and tests.csv')
+data = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\US States Data.csv')
 
-X = data[['Population', 'Cumulative tests']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = df['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
-Y = data['Cumulative cases']
+X = data[['Population', 'Tests']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = df['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
+Y = data['Actual cases (measured)']
  
+
 
 
 # with sklearn
@@ -126,14 +127,14 @@ plt.show()
 
 
 
-dataEU = pd.read_csv(r'europe.csv')
+dataEU = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\europe.csv')
 
 dataEU = dataEU.replace(',','', regex=True)
 
 #X2 = dataEU[['country', 'tests', 'population', 'Actual cases']]
 
 X2 = np.array(dataEU[['population', 'tests']])
-Y2 = dataEU['Actual cases']
+Y2 = dataEU['Actual cases (measured)']
 
 predictions = model.predict(X2.astype(int))
 
