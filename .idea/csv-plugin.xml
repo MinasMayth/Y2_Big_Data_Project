@@ -80,6 +80,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\USA\europe.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\USA\state cases and tests.csv">
           <value>
             <Attribute>

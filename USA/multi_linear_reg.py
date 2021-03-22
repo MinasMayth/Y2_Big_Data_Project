@@ -101,9 +101,14 @@ ax2 = ax1.twinx()
 X = np.array(X)
 Y = np.array(Y)
 
+ax1.set_xlabel('Population')
 ax1.scatter(X[:,0], Y, color ='red', label='Infections')
+ax1.set_ylabel('Infections')
 ax2.scatter(X[:,1], Y, color ='black', label='Tests')
+ax2.set_ylabel('Tests')
 plt.show()
+
+predictions1 = model.predict(X.astype(int))
 
 
 
@@ -113,10 +118,11 @@ x1 = X[:,0]
 x2 = X[:,1]
 ax.scatter(x1, x2, Y, c='r', marker='o')
 # Set axis labels
-ax.set_xlabel('Population')
-ax.set_ylabel('Cumulative Tests')
-ax.set_zlabel('Cumulative Cases')
-
+ax.set_xlabel('Population', fontsize=10)
+ax.set_ylabel('Cumulative Tests', fontsize=10)
+ax.set_zlabel('Cumulative Cases', fontsize=10)
+fig.suptitle('US Pop vs Tests vs Cases')
+plt.show()
 
 
 
@@ -139,8 +145,9 @@ ax = fig.gca(projection ='3d')
 ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), Y2.astype(int), label ='y') 
 ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), predictions.astype(int), label='predicted')
 ax.legend()
-ax.set_xlabel('Population', fontsize=12)
-ax.set_ylabel('Tests', fontsize=12)
-ax.set_zlabel('Actual cases', fontsize=12)
+ax.set_xlabel('Population', fontsize=10)
+ax.set_ylabel('Tests', fontsize=10)
+ax.set_zlabel('Actual cases', fontsize=10)
+fig.suptitle('US Model on European Data')
 plt.show() 
 
