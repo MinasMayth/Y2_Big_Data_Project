@@ -61,11 +61,11 @@ val_dataset = create_dataset(X_test, y_test)
 
 
 model = keras.Sequential([
-    keras.layers.Reshape(target_shape=(56*6,), input_shape=(5, 6)),
+    keras.layers.Reshape(target_shape=(1), input_shape=(9,)),
     keras.layers.Dense(units=256, activation='relu'),
     keras.layers.Dense(units=192, activation='relu'),
     keras.layers.Dense(units=128, activation='relu'),
-    keras.layers.Dense(units=1, activation='softmax')
+    keras.layers.Dense(units=1)
 ])
 
 model.compile(optimizer='adam',

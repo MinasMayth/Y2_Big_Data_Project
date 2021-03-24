@@ -67,7 +67,7 @@ def graph_plotter(Xvar, Yvar):
 
 data = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\US States Data.csv')
 
-X = data[['Population', 'Tests']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = df['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
+X = data[['Population', 'Tests']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
 Y = data['Actual cases (measured)']
  
 
