@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Multilinear Regression\US States Data 2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Multilinear Regression\US States Data.csv">
           <value>
             <Attribute>
@@ -46,6 +53,20 @@
           </value>
         </entry>
         <entry key="\Multilinear Regression\europe.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Multilinear Regression\europeUpdated.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Multilinear Regression\multi_linear_reg.py">
           <value>
             <Attribute>
               <option name="separator" value="," />

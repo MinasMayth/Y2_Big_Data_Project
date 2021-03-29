@@ -9,10 +9,11 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model
 import statsmodels.api as sm
+import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 
 
-
+"""
 def graph_plotter(Xvar, Yvar):
     X = Xvar.values.reshape(-1,2)
     Y = Yvar
@@ -63,37 +64,44 @@ def graph_plotter(Xvar, Yvar):
     
     fig.tight_layout()
 
+"""
 
+dataUS = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\US States Data.csv')
 
-data = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\US States Data.csv')
-
-X = data[['Population', 'Tests']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
-Y = data['Actual cases (measured)']
+X = dataUS[['Population', 'Tests', 'Gini - gov 2019', '% urban population']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
+Y = dataUS['Actual cases (measured)']
  
-
-
 
 # with sklearn
 regr = linear_model.LinearRegression()
 regr.fit(X, Y)
 
-plt.subplot(2,2,1)
-plt.scatter(np.array(X)[:,0],Y)
-plt.subplot(2,2,2)
-plt.scatter(np.array(X)[:,1],Y)
+fig = plt.figure()
+ax1 = plt.subplot(2,2,1)
+ax1.scatter(np.array(X)[:,0],Y)
+ax1.title.set_text("Population vs Actual cases")
+ax2 = plt.subplot(2,2,2)
+ax2.scatter(np.array(X)[:,1],Y)
+ax2.title.set_text("Tests vs Actual cases")
+ax3 = plt.subplot(2,2,3)
+ax3.scatter(np.array(X)[:,2],Y)
+ax3.title.set_text("Gini vs Actual cases")
+ax4 = plt.subplot(2,2,4)
+ax4.scatter(np.array(X)[:,3],Y)
+ax4.title.set_text("% Urban population vs Actual cases")
 plt.show()
 
 
-print('Intercept: \n', regr.intercept_)
-print('Coefficients: \n', regr.coef_)
+print('Regression Intercept: \n', regr.intercept_)
+print('Regression Coefficients: \n', regr.coef_)
 
  
 model = sm.OLS(Y, X).fit()
-
 print_model = model.summary()
 print(print_model)
 
-print(graph_plotter(X, Y))
+"""
+# print(graph_plotter(X, Y))
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
@@ -108,47 +116,46 @@ ax1.set_ylabel('Infections')
 ax2.scatter(X[:,1], Y, color ='black', label='Tests')
 ax2.set_ylabel('Tests')
 plt.show()
-
-predictions1 = model.predict(X.astype(int))
-
-
+"""
+predictions1 = regr.predict(X.astype(int)) # SKlearn model predictions
+predictions2 = model.predict(X.astype(int)) # OLS model predictions
 
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x1 = X[:,0]
-x2 = X[:,1]
-ax.scatter(x1, x2, Y, c='r', marker='o')
-# Set axis labels
-ax.set_xlabel('Population', fontsize=10)
-ax.set_ylabel('Cumulative Tests', fontsize=10)
-ax.set_zlabel('Cumulative Cases', fontsize=10)
-fig.suptitle('US Pop vs Tests vs Cases')
+ax = sns.regplot(x=predictions1, y=Y, ci=None, color="b")
+ax.title.set_text("SKlearn prediction results vs Actual cases (USA)")
+ax.set_xlabel("SKLearn prediction results")
+ax.set_ylabel("Actual Cases (USA)")
 plt.show()
 
+fig = plt.figure()
+ax = sns.regplot(x=predictions2, y=Y, ci=None, color="b")
+ax.title.set_text("OLS prediction results vs Actual cases (USA)")
+ax.set_xlabel("OLS prediction results")
+ax.set_ylabel("Actual Cases (USA)")
+plt.show()
 
 
 dataEU = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\europe.csv')
 
 dataEU = dataEU.replace(',','', regex=True)
 
-#X2 = dataEU[['country', 'tests', 'population', 'Actual cases']]
-
-X2 = np.array(dataEU[['population', 'tests']])
+X2 = np.array(dataEU[['population', 'tests', 'Gini', '%urban pop.']])
 Y2 = dataEU['Actual cases (measured)']
 
-predictions = model.predict(X2.astype(int))
+EUpredictions1 = regr.predict(X2.astype(int))
+EUpredictions2 = model.predict(X2.astype(int))
 
-print(predictions)
 
-fig = plt.figure() 
-ax = fig.gca(projection ='3d') 
-  
-ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), Y2.astype(int), label ='y') 
-ax.scatter(X2[:, 0].astype(int), X2[:,1].astype(int), predictions.astype(int), label='predicted')
-ax.legend()
-ax.set_xlabel('Population', fontsize=10)
-ax.set_ylabel('Tests', fontsize=10)
-ax.set_zlabel('Actual cases', fontsize=10)
-fig.suptitle('US Model on European Data')
-plt.show() 
+fig = plt.figure()
+ax = sns.regplot(x=EUpredictions1, y=Y2.astype(float), ci=None, color="b")
+ax.title.set_text("SKLearn prediction results vs Actual cases (EU)" )
+ax.set_xlabel("OLS prediction results")
+ax.set_ylabel("Actual Cases (EU)")
+plt.show()
 
+fig = plt.figure()
+ax = sns.regplot(x=EUpredictions2, y=Y2.astype(float), ci=None, color="b")
+ax.title.set_text("OLS prediction results vs Actual cases (EU)")
+ax.set_xlabel("OLS prediction results")
+ax.set_ylabel("Actual Cases (EU)")
+plt.show()
