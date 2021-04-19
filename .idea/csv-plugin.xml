@@ -3,6 +3,20 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="C:\Users\samya\Documents\Github-Repos\COVID-19\archived_data\archived_time_series\time_series_19-covid-Confirmed_archived_0325.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="C:\Users\samya\Documents\Github-Repos\COVID-19\archived_data\archived_time_series\time_series_2019-ncov-Confirmed.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="C:\Users\samya\Documents\covid-containment-and-health-index.csv">
           <value>
             <Attribute>
@@ -101,6 +115,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Project Data\OxCGRT_INT_latest.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Project Data\OxCGRT_US_latest.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Project Data\owid-covid-data (1).csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\README.md">
           <value>
             <Attribute>
@@ -126,6 +161,13 @@
           <value>
             <Attribute>
               <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\USA\country_response_data_reader.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>

@@ -10,7 +10,8 @@ import pandas as pd
 from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
-from mpl_toolkits.mplot3d import Axes3D
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 
 """
@@ -70,11 +71,9 @@ dataUS = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project
 
 X = dataUS[['Population', 'Tests', 'Gini - gov 2019', '% urban population']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
 Y = dataUS['Actual cases (measured)']
- 
 
-# with sklearn
-regr = linear_model.LinearRegression()
-regr.fit(X, Y)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33)
+
 
 fig = plt.figure()
 ax1 = plt.subplot(2,2,1)
@@ -91,44 +90,31 @@ ax4.scatter(np.array(X)[:,3],Y)
 ax4.title.set_text("% Urban population vs Actual cases")
 plt.show()
 
+# with sklearn
+regr = linear_model.LinearRegression()
+regr.fit(X_train, y_train)
 
 print('Regression Intercept: \n', regr.intercept_)
 print('Regression Coefficients: \n', regr.coef_)
 
  
-model = sm.OLS(Y, X).fit()
+model = sm.OLS(y_train, X_train).fit()
 print_model = model.summary()
 print(print_model)
 
-"""
-# print(graph_plotter(X, Y))
+
+predictions1 = regr.predict(X_test.astype(int)) # SKlearn model predictions
+predictions2 = model.predict(X_test.astype(int)) # OLS model predictions
 
 fig = plt.figure()
-ax1 = fig.add_subplot(111)
-ax2 = ax1.twinx()
-
-X = np.array(X)
-Y = np.array(Y)
-
-ax1.set_xlabel('Population')
-ax1.scatter(X[:,0], Y, color ='red', label='Infections')
-ax1.set_ylabel('Infections')
-ax2.scatter(X[:,1], Y, color ='black', label='Tests')
-ax2.set_ylabel('Tests')
-plt.show()
-"""
-predictions1 = regr.predict(X.astype(int)) # SKlearn model predictions
-predictions2 = model.predict(X.astype(int)) # OLS model predictions
-
-fig = plt.figure()
-ax = sns.regplot(x=predictions1, y=Y, ci=None, color="b")
+ax = sns.regplot(x=predictions1, y=y_test, ci=None, color="b")
 ax.title.set_text("SKlearn prediction results vs Actual cases (USA)")
 ax.set_xlabel("SKLearn prediction results")
 ax.set_ylabel("Actual Cases (USA)")
 plt.show()
 
 fig = plt.figure()
-ax = sns.regplot(x=predictions2, y=Y, ci=None, color="b")
+ax = sns.regplot(x=predictions2, y=y_test, ci=None, color="b")
 ax.title.set_text("OLS prediction results vs Actual cases (USA)")
 ax.set_xlabel("OLS prediction results")
 ax.set_ylabel("Actual Cases (USA)")
