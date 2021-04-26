@@ -81,6 +81,12 @@ def split_data(data):
 
 
 def train_model(model, train_features, train_labels):
+    print(train_features.shape)
+
+    # Define model
+    model = build_and_compile_model(train_features)
+    model.summary()
+
     # Train model on data
     history = model.fit(
         train_features, train_labels,
@@ -102,7 +108,6 @@ def plot_predictions(predictions, test_labels):
     plt.ylim(lims)
     _ = plt.plot(lims, lims)
     plt.show()
-
 
 def predict_infections_rsquare(model, test_features, test_labels):
     # Predict values of test data and compute R-Squared coefficient
@@ -199,4 +204,3 @@ def train_usa_test_europe():
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on USA data and tests on USA data
     train_usa_test_europe()
-
