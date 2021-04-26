@@ -44,16 +44,32 @@ def build_and_compile_model(data):
     return model
 
 
+def remove_commas(data):
+    print(type(data))
+    print(data.shape)
+    columns = data.columns
+    for column in data[columns]:
+        for index, value in enumerate(data[column].values):
+            if isinstance(value, str):
+                print(value)
+                data[column].iloc[index] = value.replace(',', '')
+    return data
+
+
 def preprocess_data(data, features):
-    for col in data.columns:
-        print(col)
+    # Select only certain features in the preprocessing pipeline
     data = data[features]
 
-    # One-hot encode categorical variables
+    # Remove potential commas present in the .csv
+    data = remove_commas(data)
+
+    # One-hot encode categorical variables (might be useful if we decide to use categorical variables)
     # data = pd.get_dummies(data)
 
     # Normalize data
     x = data.values  # returns a numpy array
+    print(x.shape)
+
     min_max_scaler = MinMaxScaler()
     x_scaled = min_max_scaler.fit_transform(x)
     data = pd.DataFrame(x_scaled)
@@ -109,6 +125,7 @@ def plot_predictions(predictions, test_labels):
     _ = plt.plot(lims, lims)
     plt.show()
 
+
 def predict_infections_rsquare(model, test_features, test_labels):
     # Predict values of test data and compute R-Squared coefficient
     predicted = model.predict(test_features)
@@ -123,13 +140,63 @@ def predict_infections_rsquare(model, test_features, test_labels):
     return result.numpy()
 
 
+def usa_features():
+    return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
+     '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+
+
+def europe_features():
+    return ['population (discrete data)', 'tests     (discrete data)', 'Gini      (discrete data)',
+                '%urban pop.  (continuous data)', 'Actual cases']
+
+
+def train_x_test_y(x='Project Data', y='US States Data.csv'):
+    # Load data
+    data = load_data(x, y)
+
+    # Select some features to train and test on
+    if x == 'US States Data.csv':
+        features = usa_features()
+    else:
+        features = europe_features()
+
+    # Select features and clean data
+    data = preprocess_data(data, features)
+
+    # Split data into train and test samples
+    train_features, train_labels, test_features, test_labels = split_data(data)
+
+    # Define model
+    model = build_and_compile_model(train_features)
+    model.summary()
+
+    # Train model and retrieve performance of model during training
+    model, history = train_model(model, train_features, train_labels)
+
+    # Plot loss during training history
+    plot_loss(history)
+
+    # Evaluate model on test data
+    dnn_results_usa = model.evaluate(test_features, test_labels, verbose=0)
+    # print(f'DNN Validation Loss: {dnn_results_usa}')
+
+    # Get the RSquare
+    dnn_results_usa_rsquare = predict_infections_rsquare(model, test_features, test_labels)
+    print(f'RSquare: {dnn_results_usa_rsquare}')
+
+    # Get predictions of model on test data
+    test_predictions = model.predict(test_features).flatten()
+
+    # Plot model predictions against actual values
+    plot_predictions(test_predictions, test_labels)
+
+
 def train_usa_test_usa():
     # Load data
     data = load_data('Project Data', 'US States Data.csv')
 
     # Select some features to train and test on
-    features = ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
-                 '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+    features = usa_features()
 
     # Select features and clean data
     data = preprocess_data(data, features)
@@ -164,11 +231,10 @@ def train_usa_test_usa():
 
 def train_usa_test_europe():
     # Load data
-    data = load_data('Project Data', 'europe.csv')
+    data = load_data('Project Data', 'US States Data.csv')
 
     # Select some features to train and test on
-    features = ['population (discrete data)', 'tests (discrete data)', 'Gini (discrete data)',
-                '%urban pop. (continuous data)', 'actual cases (measured) (discrete data)']
+    features = usa_features()
 
     # Select features and clean data
     data = preprocess_data(data, features)
@@ -186,13 +252,22 @@ def train_usa_test_europe():
     # Plot loss during training history
     plot_loss(history)
 
+    test_data = load_data('Project Data', 'europe.csv')
+
+    # Select some features to train and test on
+    test_features = europe_features()
+
+    # Select features and clean data
+    test_features = preprocess_data(test_data, test_features)
+    test_labels = test_features.pop(4)
+
     # Evaluate model on test data
-    dnn_results_usa = model.evaluate(test_features, test_labels, verbose=0)
-    print(f'DNN Validation Loss: {dnn_results_usa}')
+    loss = model.evaluate(test_features, test_labels, verbose=0)
+    print(f'DNN Validation Loss: {loss}')
 
     # Get the RSquare
-    dnn_results_usa_rsquare = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {dnn_results_usa_rsquare}')
+    dnn_results_usa_europe_rsquare = predict_infections_rsquare(model, test_features, test_labels)
+    print(f'RSquare: {dnn_results_usa_europe_rsquare}')
 
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
