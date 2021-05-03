@@ -159,8 +159,8 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv'):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
-    :param x: The dataset that the model will train on.
-    :param y: The dataset that the model will test on.
+    :param train: The dataset that the model will train on.
+    :param test: The dataset that the model will test on.
     :return: None
     """
 
