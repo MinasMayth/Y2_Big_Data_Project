@@ -112,7 +112,7 @@ def train_model(model, train_features, train_labels):
     return model, history
 
 
-def plot_predictions(predictions, test_labels):
+def plot_predictions(predictions, test_labels, x, y):
     # Plot predictions
 
     a = plt.axes(aspect='equal')
@@ -122,7 +122,9 @@ def plot_predictions(predictions, test_labels):
     lims = [0, 1]
     plt.xlim(lims)
     plt.ylim(lims)
+    plt.title(f'Trained on {x} predicting on {y}')
     _ = plt.plot(lims, lims)
+
     plt.show()
 
 
@@ -150,15 +152,15 @@ def europe_features():
                 '%urban pop.  (continuous data)', 'Actual cases']
 
 
-def train_x_test_y(x='Project Data', y='US States Data.csv'):
+def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     # Load data
-    data = load_data(x, y)
+    data = load_data('Project Data', x)
 
     # Select some features to train and test on
-    if x == 'US States Data.csv':
-        features = usa_features()
-    else:
+    if x == 'europe.csv':
         features = europe_features()
+    else:
+        features = usa_features()
 
     # Select features and clean data
     data = preprocess_data(data, features)
@@ -176,86 +178,13 @@ def train_x_test_y(x='Project Data', y='US States Data.csv'):
     # Plot loss during training history
     plot_loss(history)
 
-    # Evaluate model on test data
-    dnn_results_usa = model.evaluate(test_features, test_labels, verbose=0)
-    # print(f'DNN Validation Loss: {dnn_results_usa}')
-
-    # Get the RSquare
-    dnn_results_usa_rsquare = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {dnn_results_usa_rsquare}')
-
-    # Get predictions of model on test data
-    test_predictions = model.predict(test_features).flatten()
-
-    # Plot model predictions against actual values
-    plot_predictions(test_predictions, test_labels)
-
-
-def train_usa_test_usa():
-    # Load data
-    data = load_data('Project Data', 'US States Data.csv')
+    test_data = load_data('Project Data', y)
 
     # Select some features to train and test on
-    features = usa_features()
-
-    # Select features and clean data
-    data = preprocess_data(data, features)
-
-    # Split data into train and test samples
-    train_features, train_labels, test_features, test_labels = split_data(data)
-
-    # Define model
-    model = build_and_compile_model(train_features)
-    model.summary()
-
-    # Train model and retrieve performance of model during training
-    model, history = train_model(model, train_features, train_labels)
-
-    # Plot loss during training history
-    plot_loss(history)
-
-    # Evaluate model on test data
-    dnn_results_usa = model.evaluate(test_features, test_labels, verbose=0)
-    print(f'DNN Validation Loss: {dnn_results_usa}')
-
-    # Get the RSquare
-    dnn_results_usa_rsquare = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {dnn_results_usa_rsquare}')
-
-    # Get predictions of model on test data
-    test_predictions = model.predict(test_features).flatten()
-
-    # Plot model predictions against actual values
-    plot_predictions(test_predictions, test_labels)
-
-
-def train_usa_test_europe():
-    # Load data
-    data = load_data('Project Data', 'US States Data.csv')
-
-    # Select some features to train and test on
-    features = usa_features()
-
-    # Select features and clean data
-    data = preprocess_data(data, features)
-
-    # Split data into train and test samples
-    train_features, train_labels, test_features, test_labels = split_data(data)
-
-    # Define model
-    model = build_and_compile_model(train_features)
-    model.summary()
-
-    # Train model and retrieve performance of model during training
-    model, history = train_model(model, train_features, train_labels)
-
-    # Plot loss during training history
-    plot_loss(history)
-
-    test_data = load_data('Project Data', 'europe.csv')
-
-    # Select some features to train and test on
-    test_features = europe_features()
+    if y == 'europe.csv':
+        test_features = europe_features()
+    else:
+        test_features = usa_features()
 
     # Select features and clean data
     test_features = preprocess_data(test_data, test_features)
@@ -273,9 +202,9 @@ def train_usa_test_europe():
     test_predictions = model.predict(test_features).flatten()
 
     # Plot model predictions against actual values
-    plot_predictions(test_predictions, test_labels)
+    plot_predictions(test_predictions, test_labels, x, y)
 
 
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on USA data and tests on USA data
-    train_usa_test_europe()
+    train_x_test_y('US States Data.csv', 'europe.csv')
