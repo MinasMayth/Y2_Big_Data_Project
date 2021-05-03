@@ -156,7 +156,7 @@ def europe_features():
                 '%urban pop.  (continuous data)', 'Actual cases']
 
 
-def train_x_test_y(x='US States Data.csv', y='europe.csv'):
+def train_x_test_y(train='US States Data.csv', test='europe.csv'):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
@@ -164,20 +164,39 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     :param y: The dataset that the model will test on.
     :return: None
     """
+
+    # If we are training and testing on the same model, we need to split the data into training and testing samples
+    train_test_split = False
+    if train == test:
+        train_test_split = True
+
     # Helper dict object
     data_dict = {US_DATA: usa_features(), EUROPE_DATA: europe_features()}
 
-    # Load data
-    data = load_data('Project Data', x)
+    # Load training data
+    train_data = load_data('Project Data', train)
 
-    # Select some features to train and test on
-    features = data_dict[x]
+    # Load in test data
+    test_data = load_data('Project Data', test)
 
-    # Select features and clean data
-    data = preprocess_data(data, features)
+    if not train_test_split:
+        # Select some features to train on
+        train_features = data_dict[train]
 
-    # Split data into train and test samples
-    train_features, train_labels, test_features, test_labels = split_data(data)
+        # Preprocess train data by cleaning and normalizing
+        train_features = preprocess_data(train_data, train_features)
+        train_labels = train_features.pop(4)
+
+        # Select some testing features
+        test_features = data_dict[test]
+
+        # Select features and clean data
+        test_features = preprocess_data(test_data, test_features)
+        test_labels = test_features.pop(4)
+    else:
+        train_features = data_dict[train]
+        train_data = preprocess_data(train_data, train_features)
+        train_features, train_labels, test_features, test_labels = split_data(train_data)
 
     # Define model
     model = build_and_compile_model(train_features)
@@ -189,17 +208,7 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     # Plot loss during training history
     plot_loss(history)
 
-    # Load in test data
-    test_data = load_data('Project Data', y)
-
-    # Select some testing features
-    test_features = data_dict[y]
-
-    # Select features and clean data
-    test_features = preprocess_data(test_data, test_features)
-    test_labels = test_features.pop(4)
-
-    # Evaluate model on test data
+    # Preprocess test data by cleaning and normalizing
     loss = model.evaluate(test_features, test_labels, verbose=0)
     print(f'DNN Validation Loss: {loss}')
 
@@ -211,9 +220,10 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     test_predictions = model.predict(test_features).flatten()
 
     # Plot model predictions against actual values
-    plot_predictions(test_predictions, test_labels, x, y)
+    plot_predictions(test_predictions, test_labels, train, test)
 
 
 if __name__ == '__main__':
-    # Pipeline that trains a neural network model on USA data and tests on USA data
-    train_x_test_y(EUROPE_DATA, US_DATA)
+    # Pipeline that trains a neural network model on `train` argument of `train_x_test_y` function tests on `test`
+    # argument of `train_x_test_y` function
+    train_x_test_y(US_DATA, EUROPE_DATA)
