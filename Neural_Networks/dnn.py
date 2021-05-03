@@ -9,6 +9,10 @@ from tensorflow.keras import layers
 from tensorflow.keras import Sequential
 from tensorflow_addons.metrics import RSquare
 
+# Globals for data files
+US_DATA = 'US States Data.csv'
+EUROPE_DATA = 'europe.csv'
+
 
 def load_data(folder, filename):
     """
@@ -207,4 +211,4 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
 
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on USA data and tests on USA data
-    train_x_test_y('US States Data.csv', 'europe.csv')
+    train_x_test_y(US_DATA, EUROPE_DATA)
