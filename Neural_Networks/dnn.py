@@ -157,6 +157,13 @@ def europe_features():
 
 
 def train_x_test_y(x='US States Data.csv', y='europe.csv'):
+    """
+    Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
+    plots the actual vs predicted values and computes the RSquare coefficient of the model.
+    :param x: The dataset that the model will train on.
+    :param y: The dataset that the model will test on.
+    :return: None
+    """
     # Helper dict object
     data_dict = {US_DATA: usa_features(), EUROPE_DATA: europe_features()}
 
@@ -182,9 +189,10 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     # Plot loss during training history
     plot_loss(history)
 
+    # Load in test data
     test_data = load_data('Project Data', y)
 
-    # Select some features to train and test on
+    # Select some testing features
     test_features = data_dict[y]
 
     # Select features and clean data
