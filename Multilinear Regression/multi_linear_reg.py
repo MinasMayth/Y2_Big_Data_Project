@@ -69,7 +69,7 @@ def graph_plotter(Xvar, Yvar):
 
 dataUS = pd.read_csv(r'C:\Users\samya\Documents\Github-Repos\Y2_Big_Data_Project\Multilinear Regression\US States Data.csv')
 
-X = dataUS[['Population', 'Tests', 'Gini - gov 2019', '% urban population']] # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
+X = dataUS[['Population', 'Tests', 'Gini - gov 2019', '% urban population']]  # here we have 2 variables for multiple regression. If you just want to use one variable for simple linear regression, then use X = data['Interest_Rate'] for example.Alternatively, you may add additional variables within the brackets
 Y = dataUS['Actual cases (measured)']
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33)
@@ -103,8 +103,8 @@ print_model = model.summary()
 print(print_model)
 
 
-predictions1 = regr.predict(X_test.astype(int)) # SKlearn model predictions
-predictions2 = model.predict(X_test.astype(int)) # OLS model predictions
+predictions1 = regr.predict(X_test.astype(int))  # SKlearn model predictions
+predictions2 = model.predict(X_test.astype(int))  # OLS model predictions
 
 fig = plt.figure()
 ax = sns.regplot(x=predictions1, y=y_test, ci=None, color="b")
