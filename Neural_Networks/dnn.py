@@ -157,14 +157,14 @@ def europe_features():
 
 
 def train_x_test_y(x='US States Data.csv', y='europe.csv'):
+    # Helper dict object
+    data_dict = {US_DATA: usa_features(), EUROPE_DATA: europe_features()}
+
     # Load data
     data = load_data('Project Data', x)
 
     # Select some features to train and test on
-    if x == 'europe.csv':
-        features = europe_features()
-    else:
-        features = usa_features()
+    features = data_dict[x]
 
     # Select features and clean data
     data = preprocess_data(data, features)
@@ -185,10 +185,7 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     test_data = load_data('Project Data', y)
 
     # Select some features to train and test on
-    if y == 'europe.csv':
-        test_features = europe_features()
-    else:
-        test_features = usa_features()
+    test_features = data_dict[y]
 
     # Select features and clean data
     test_features = preprocess_data(test_data, test_features)
@@ -199,8 +196,8 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
     print(f'DNN Validation Loss: {loss}')
 
     # Get the RSquare
-    dnn_results_usa_europe_rsquare = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {dnn_results_usa_europe_rsquare}')
+    rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
+    print(f'RSquare: {rsquare_result}')
 
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
@@ -211,4 +208,4 @@ def train_x_test_y(x='US States Data.csv', y='europe.csv'):
 
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on USA data and tests on USA data
-    train_x_test_y(US_DATA, EUROPE_DATA)
+    train_x_test_y(EUROPE_DATA, US_DATA)
