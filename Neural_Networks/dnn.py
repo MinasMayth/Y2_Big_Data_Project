@@ -116,7 +116,7 @@ def train_model(model, train_features, train_labels):
     return model, history
 
 
-def plot_predictions(predictions, test_labels, x, y):
+def plot_predictions(predictions, test_labels, train, test):
     # Plot predictions
 
     a = plt.axes(aspect='equal')
@@ -126,9 +126,8 @@ def plot_predictions(predictions, test_labels, x, y):
     lims = [0, 1]
     plt.xlim(lims)
     plt.ylim(lims)
-    plt.title(f'Trained on {x} predicting on {y}')
+    plt.title(f'Trained on {train} predicting on {test}')
     _ = plt.plot(lims, lims)
-
     plt.show()
 
 
@@ -173,7 +172,7 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv'):
     # Helper dict object
     data_dict = {US_DATA: usa_features(), EUROPE_DATA: europe_features()}
 
-    # Load training data
+    # Load in training data
     train_data = load_data('Project Data', train)
 
     # Load in test data
