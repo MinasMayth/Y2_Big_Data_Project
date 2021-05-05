@@ -1,13 +1,12 @@
 import os
-import numpy as np
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
 from tensorflow.keras import Sequential
 from tensorflow_addons.metrics import RSquare
+from tensorflow.keras.utils import plot_model
 
 # Globals for data files
 US_DATA = 'US States Data.csv'
@@ -103,10 +102,6 @@ def split_data(data):
 def train_model(model, train_features, train_labels):
     print(train_features.shape)
 
-    # Define model
-    model = build_and_compile_model(train_features)
-    model.summary()
-
     # Train model on data
     history = model.fit(
         train_features, train_labels,
@@ -199,7 +194,10 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv'):
 
     # Define model
     model = build_and_compile_model(train_features)
+
+    # Summary of the model
     model.summary()
+    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
     # Train model and retrieve performance of model during training
     model, history = train_model(model, train_features, train_labels)
