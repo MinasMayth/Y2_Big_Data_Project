@@ -1,6 +1,4 @@
 
-<
-amin/plot.py,2\c\2cde2773849a3ba65b1d1266eaa0e57946df6a68
 c
 3Project Data/district_tested,cases,deaths_india.csv,8\f\8f8c5b55627a899850069ae23016220b28f7af47
 S
