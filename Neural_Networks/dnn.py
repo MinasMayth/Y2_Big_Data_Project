@@ -142,12 +142,12 @@ def predict_infections_rsquare(model, test_features, test_labels):
 
 def usa_features():
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
-     '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+            '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
 
 
 def europe_features():
     return ['population (discrete data)', 'tests     (discrete data)', 'Gini      (discrete data)',
-                '%urban pop.  (continuous data)', 'Actual cases']
+            '%urban pop.  (continuous data)', 'Actual cases']
 
 
 def train_x_test_y(train='US States Data.csv', test='europe.csv'):
