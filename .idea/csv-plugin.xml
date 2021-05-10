@@ -3,62 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="C:\Users\samya\Documents\Github-Repos\COVID-19\archived_data\archived_time_series\time_series_19-covid-Confirmed_archived_0325.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="C:\Users\samya\Documents\Github-Repos\COVID-19\archived_data\archived_time_series\time_series_2019-ncov-Confirmed.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="C:\Users\samya\Documents\covid-containment-and-health-index.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="C:\Users\samya\Documents\covid-stringency-index.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\India\india_Test_Cleaned.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Indian_Test_Per_State.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Multilinear Regression\US States Data  - Sheet1.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Multilinear Regression\US States Data 2.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Multilinear Regression\US States Data.csv">
           <value>
             <Attribute>
@@ -73,27 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Multilinear Regression\europeUpdated.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Multilinear Regression\multi_linear_reg.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Neural_Networks\TensorflowNN.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Project Data\India.csv">
           <value>
             <Attribute>
@@ -101,21 +24,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Project Data\India_data_cleaned.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Project Data\India_districts_population_data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Project Data\OxCGRT_INT_latest.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -157,49 +66,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\README.md">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Time Series Data\US Counties\covid_confirmed_usafacts.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\covid_confirmed_usafacts.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\covid_county_population_usafacts.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\time_series_19-covid-Confirmed_archived_0325.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\time_series_19-covid-Deaths_archived_0325.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\time_series_19-covid-Recovered_archived_0325.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -221,76 +88,6 @@
           </value>
         </entry>
         <entry key="\Time Series Data\time_series_covid19_recovered_global.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Time Series Data\us-states.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\Population-counties.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\counties 7 day.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\counties cases.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\country_response_data_reader.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\europe.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\state cases and tests.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USA\us counties pop density.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\amin\India_data_cleaned.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\amin\plot_districts.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
