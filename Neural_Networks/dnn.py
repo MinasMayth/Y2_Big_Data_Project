@@ -221,6 +221,7 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
 
 
 if __name__ == '__main__':
-    # Pipeline that trains a neural network model on `train` argument of `train_x_test_y` function tests on `test`
+    # Pipeline that trains a multilinear regression model on `train` argument
+    # of `train_x_test_y` function tests on `test`
     # argument of `train_x_test_y` function
     train_x_test_y(US_DATA, EUROPE_DATA)

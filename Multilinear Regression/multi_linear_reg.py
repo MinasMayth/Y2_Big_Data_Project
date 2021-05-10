@@ -6,10 +6,10 @@ Created on Sun Mar 14 11:08:37 2021
 """
 import os
 import matplotlib.pyplot as plt
-from tensorflow_addons.metrics import RSquare
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import explained_variance_score, r2_score
 from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
@@ -17,25 +17,21 @@ import seaborn as sns
 US_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\US States Data.csv'
 EUROPE_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\europe.csv'
 
-def predict_infections_rsquare(model, test_features, test_labels):
-    # Predict values of test data and compute R-Squared coefficient
-    predicted = model.predict(test_features)
-    predicted = predicted.astype(int)
-
-    # Measure the RSquare coefficient
-    metric = RSquare()
-    metric.update_state(test_labels, predicted)
-    result = metric.result()
-
-    # Return result
-    return result.numpy()
 
 def usa_features():
+    """
+    Features to be used from USA data
+    :return: Relevant column titles of Pandas Dataframes
+    """
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
             '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
 
 
 def europe_features():
+    """
+        Features to be used from EU data - This should be the same as the US data
+        :return: Relevant column titles of Pandas Dataframes
+        """
     return ['population (discrete data)', 'tests     (discrete data)', 'Gini      (discrete data)',
             '%urban pop.  (continuous data)', 'Actual cases']
 
@@ -50,17 +46,6 @@ def load_data(folder, filename):
     """
     csv_data = pd.read_csv(os.path.join('..', folder, filename))
     return csv_data
-
-
-def plot_loss(history):
-    plt.plot(history.history['loss'], label='loss')
-    plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, .25])
-    plt.xlabel('Epoch')
-    plt.ylabel('Error [Actual Cases]')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
 
 
 def snsregressionplot(x, y, title, xlabel, ylabel):
@@ -186,28 +171,31 @@ def MultiLinearReg_train_x_test_y(train, test):
 
     predictions1 = regr.predict(train_features)  # SKlearn model predictions
 
-    predictions2 = model.predict(train_features)  # OLS model predictions
-
-    #SNS plots
     snsregressionplot(predictions1, train_labels, "SKlearn prediction results vs Actual cases (USA)",
                       "SKLearn prediction results", "Actual Cases (USA)")
+
+    print("US data SKlearn explained_variance_score:", explained_variance_score(train_labels, predictions1))
+    print("US data SKlearn R2:", r2_score(train_labels, predictions1))
+
+    predictions2 = model.predict(train_features)  # OLS model predictions
 
     snsregressionplot(predictions2, train_labels, "OLS prediction results vs Actual cases (USA)",
                       "OLS prediction results", "Actual Cases (USA)")
 
-    # Get the RSquare
-    rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {rsquare_result}')
-
+    print("US data OLS explained_variance_score:", explained_variance_score(train_labels, predictions2))
 
     EUpredictions1 = regr.predict(test_features)
 
-    EUpredictions2 = model.predict(test_features)
-
     snsregressionplot(EUpredictions1, test_labels, "SKLearn prediction results vs Actual cases (EU)",
                       "SKLearn prediction results", "Actual Cases (EU)")
-    snsregressionplot(EUpredictions2, test_labels, "OLS prediction results vs Actual cases (EU)", "OLS prediction results",
+    print("EU data SKLearn explained_variance_score:", explained_variance_score(test_labels, EUpredictions1))
+
+    EUpredictions2 = model.predict(test_features)
+
+    snsregressionplot(EUpredictions2, test_labels, "OLS prediction results vs Actual cases (EU)",
+                      "OLS prediction results",
                       "Actual Cases (EU)")
+    print("EU data OLS explained_variance_score:", explained_variance_score(test_labels, EUpredictions2))
 
 
 if __name__ == "__main__":
