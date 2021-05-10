@@ -9,8 +9,8 @@ from tensorflow_addons.metrics import RSquare
 from tensorflow.keras.utils import plot_model
 
 # Globals for data files
-US_DATA = 'US States Data.csv'
-EUROPE_DATA = 'europe.csv'
+US_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\US States Data.csv'
+EUROPE_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\europe.csv'
 
 
 def load_data(folder, filename):
@@ -28,7 +28,7 @@ def load_data(folder, filename):
 def plot_loss(history):
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, 10])
+    plt.ylim([0, .25])
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.legend()
@@ -142,15 +142,15 @@ def predict_infections_rsquare(model, test_features, test_labels):
 
 def usa_features():
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
-     '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+            '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
 
 
 def europe_features():
     return ['population (discrete data)', 'tests     (discrete data)', 'Gini      (discrete data)',
-                '%urban pop.  (continuous data)', 'Actual cases']
+            '%urban pop.  (continuous data)', 'Actual cases']
 
 
-def train_x_test_y(train='US States Data.csv', test='europe.csv'):
+def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
@@ -210,8 +210,8 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv'):
     print(f'DNN Validation Loss: {loss}')
 
     # Get the RSquare
-    rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
-    print(f'RSquare: {rsquare_result}')
+    # rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
+    # print(f'RSquare: {rsquare_result}')
 
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
