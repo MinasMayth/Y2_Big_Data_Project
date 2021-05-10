@@ -210,8 +210,8 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
     print(f'DNN Validation Loss: {loss}')
 
     # Get the RSquare
-    # rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
-    # print(f'RSquare: {rsquare_result}')
+    rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
+    print(f'RSquare: {rsquare_result}')
 
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
