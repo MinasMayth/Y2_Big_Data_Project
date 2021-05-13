@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import explained_variance_score, r2_score
+from sklearn.metrics import explained_variance_score, mean_absolute_error
 from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
@@ -164,6 +164,13 @@ def MultiLinearReg_train_x_test_y(train, test):
     print('Regression Intercept: \n', regr.intercept_)
     print('Regression Coefficients: \n', regr.coef_)
 
+    importance = regr.coef_
+
+    # summarize feature importance
+
+    for i, v in enumerate(importance):
+        print('Feature: %0d, Score: %.5f' % (i, v))
+
     # SM model creation
     model = sm.OLS(train_labels, train_features).fit()
     print_model = model.summary()
@@ -175,7 +182,7 @@ def MultiLinearReg_train_x_test_y(train, test):
                       "SKLearn prediction results", "Actual Cases (USA)")
 
     print("US data SKlearn explained_variance_score:", explained_variance_score(train_labels, predictions1))
-    print("US data SKlearn R2:", r2_score(train_labels, predictions1))
+    print("US data SKlearn mean_absolute_error:", mean_absolute_error(train_labels, predictions1))
 
     predictions2 = model.predict(train_features)  # OLS model predictions
 
