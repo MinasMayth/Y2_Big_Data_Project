@@ -37,7 +37,7 @@ def load_data(folder, filename):
 def plot_loss(history, fold):
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, 10])
+    plt.ylim([0, 1])
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.title(f'Losses at fold {fold}')
@@ -207,6 +207,7 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug
     # K-Fold initialization
     k_fold = KFold(n_splits=folds, shuffle=False)
     n_fold = 0
+    losses = []
     r_squares = []
     for train_index, test_index in k_fold.split(train_features):
         n_fold += 1
@@ -237,11 +238,14 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug
         loss = model.evaluate(X_test, y_test, verbose=0)
         print(f'DNN Validation Loss: {loss}')
 
+        # Append loss of fold for final statistic
+        losses.append(loss)
+
         # Get the RSquare
         rsquare_result = predict_infections_rsquare(model, X_test, y_test)
         print(f'RSquare at fold {n_fold}: {rsquare_result}')
 
-        # Sum r-square for final statistic
+        # Append RSquare of fold for final statistic
         r_squares.append(rsquare_result)
 
         # Get predictions of model on test data
@@ -250,14 +254,21 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug
         # Plot model predictions against actual values
         plot_predictions(test_predictions, y_test, train, test, n_fold)
 
-    # Print average RSquare
+    # Print average RSquare and loss
+    print(losses)
+    print(f'Mean Absolute Error: {sum(losses) / folds}')
     print(f'Average RSquare: {sum(r_squares) / folds}')
 
-    # Save RSquare score for each fold and store in k-folds results folder
-    with open('k_fold_results/rsquares.txt', "w") as each_fold:
+    # Save RSquare score and loss for each fold and store in k-folds results folder
+    with open('k_fold_results/rsquares.txt', "w") as each_rsquare:
         temp = [str(x) for x in r_squares]
         for index, result in enumerate(temp):
-            each_fold.write(str(index) + ': ' + result + '\n')
+            each_rsquare.write(str(index) + ': ' + result + '\n')
+
+    with open('k_fold_results/loses.txt', "w") as each_loss:
+        temp = [str(x) for x in losses]
+        for index, result in enumerate(temp):
+            each_loss.write(str(index) + ': ' + result + '\n')
 
 
 if __name__ == '__main__':
