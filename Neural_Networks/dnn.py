@@ -9,8 +9,8 @@ from tensorflow_addons.metrics import RSquare
 from tensorflow.keras.utils import plot_model
 
 # Globals for data files
-US_DATA = 'US States Data.csv'
-EUROPE_DATA = 'europe.csv'
+US_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\US States Data.csv'
+EUROPE_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\europe.csv'
 
 
 def load_data(folder, filename):
@@ -28,7 +28,7 @@ def load_data(folder, filename):
 def plot_loss(history):
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, 10])
+    plt.ylim([0, .25])
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.legend()
@@ -150,7 +150,7 @@ def europe_features():
             '%urban pop.  (continuous data)', 'Actual cases']
 
 
-def train_x_test_y(train='US States Data.csv', test='europe.csv'):
+def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
@@ -221,6 +221,7 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv'):
 
 
 if __name__ == '__main__':
-    # Pipeline that trains a neural network model on `train` argument of `train_x_test_y` function tests on `test`
+    # Pipeline that trains a multilinear regression model on `train` argument
+    # of `train_x_test_y` function tests on `test`
     # argument of `train_x_test_y` function
     train_x_test_y(US_DATA, EUROPE_DATA)
