@@ -40,9 +40,10 @@ def plot_loss(history, fold):
     plt.ylim([0, 10])
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
+    plt.title(f'Losses at fold {fold}')
     plt.legend()
     plt.grid(True)
-    plt.savefig(f'fold_{fold}')
+    plt.savefig(f'k_fold_results/train_fold_{fold}')
 
 
 def build_and_compile_model(data):
@@ -130,9 +131,10 @@ def plot_predictions(predictions, test_labels, train, test, fold):
     lims = [0, 1]
     plt.xlim(lims)
     plt.ylim(lims)
-    plt.title(f'Trained on {train} predicting on {test}')
+    plt.title(f'FOLD: {fold} Trained on {train} predicting on {test}')
     _ = plt.plot(lims, lims)
-    plt.savefig(f'predictions_fold_{fold}')
+    plt.savefig(f'k_fold_results/predictions_fold_{fold}')
+    plt.close()
 
 
 def predict_infections_rsquare(model, test_features, test_labels):
@@ -202,29 +204,10 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=10, debu
     test_features = preprocess_data(test_data, test_features)
     test_labels = test_features.pop(4)
 
-    # if not train_test_split:
-    #     # Select some features to train on
-    #     train_features = data_dict[train]
-    #
-    #     # Preprocess train data by cleaning and normalizing
-    #     train_features = preprocess_data(train_data, train_features)
-    #     train_labels = train_features.pop(4)
-    #
-    #     # Select some testing features
-    #     test_features = data_dict[test]
-    #
-    #     # Select features and clean data
-    #     test_features = preprocess_data(test_data, test_features)
-    #     test_labels = test_features.pop(4)
-    # else:
-    #     train_features = data_dict[train]
-    #     train_data = preprocess_data(train_data, train_features)
-    #     train_features, train_labels, test_features, test_labels = split_data(train_data)
-
     # K-Fold initialization
     k_fold = KFold(n_splits=folds, shuffle=True)
     n_fold = 0
-    sum_r_square = 0
+    r_squares = []
     for train_index, test_index in k_fold.split(train_features):
         n_fold += 1
         print(f'FOLD: {n_fold} TRAIN: {train_index} TEST: {test_index}')
@@ -248,45 +231,36 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=10, debu
             X_test = train_features.iloc[test_index]
             y_test = train_labels.iloc[test_index]
         else:
-            X_test = test_features.iloc[test_index]
-            y_test = test_labels.iloc[test_index]
+            X_test = test_features
+            y_test = test_labels
 
-        if same_data:
-            loss = model.evaluate(X_test, y_test, verbose=0)
-            print(f'DNN Validation Loss: {loss}')
+        loss = model.evaluate(X_test, y_test, verbose=0)
+        print(f'DNN Validation Loss: {loss}')
 
-            # Get the RSquare
-            rsquare_result = predict_infections_rsquare(model, X_test, y_test)
-            print(f'RSquare at fold {n_fold}: {rsquare_result}')
+        # Get the RSquare
+        rsquare_result = predict_infections_rsquare(model, X_test, y_test)
+        print(f'RSquare at fold {n_fold}: {rsquare_result}')
 
-            # Sum r-square for final statistic
-            sum_r_square += rsquare_result
+        # Sum r-square for final statistic
+        r_squares.append(rsquare_result)
 
-            # Get predictions of model on test data
-            test_predictions = model.predict(X_test).flatten()
+        # Get predictions of model on test data
+        test_predictions = model.predict(X_test).flatten()
 
-            # Plot model predictions against actual values
-            plot_predictions(test_predictions, y_test, train, test, n_fold)
-        else:
-            loss = model.evaluate(test_features, test_labels, verbose=0)
-            print(f'DNN Validation Loss: {loss}')
+        # Plot model predictions against actual values
+        plot_predictions(test_predictions, y_test, train, test, n_fold)
 
-            # Get the RSquare
-            rsquare_result = predict_infections_rsquare(model, test_features, test_labels)
-            print(f'RSquare at fold {n_fold}: {rsquare_result}')
+    # Print average RSquare
+    print(f'Average RSquare: {sum(r_squares) / folds}')
 
-            # Sum r-square for final statistic
-            sum_r_square += rsquare_result
-
-            # Get predictions of model on test data
-            test_predictions = model.predict(test_features).flatten()
-
-            # Plot model predictions against actual values
-            plot_predictions(test_predictions, y_test, train, test, n_fold)
-    print(f'Average RSquare: {sum_r_square / folds}')
+    # Save RSquare score for each fold and store in k-folds results folder
+    with open('k_fold_results/rsquares.txt', "w") as each_fold:
+        temp = [str(x) for x in r_squares]
+        for index, result in enumerate(temp):
+            each_fold.write(str(index) + ': ' + result + '\n')
 
 
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on `train` argument of `train_x_test_y` function tests on `test`
     # argument of `train_x_test_y` function
-    train_x_test_y(US_DATA, US_DATA)
+    train_x_test_y(US_DATA, EUROPE_DATA)
