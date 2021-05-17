@@ -14,8 +14,8 @@ from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
 
-US_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\US States Data.csv'
-EUROPE_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\europe.csv'
+US_DATA = r'US States Data.csv'
+EUROPE_DATA = r'europe.csv'
 
 
 def usa_features():

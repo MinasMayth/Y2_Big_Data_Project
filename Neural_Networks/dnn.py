@@ -9,8 +9,8 @@ from tensorflow_addons.metrics import RSquare
 from tensorflow.keras.utils import plot_model
 
 # Globals for data files
-US_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\US States Data.csv'
-EUROPE_DATA = r'C:\Users\samya\Documents\Programming\Github_Repos\Y2_Big_Data_Project\Project Data\europe.csv'
+US_DATA = r'US States Data.csv'
+EUROPE_DATA = r'europe.csv'
 
 
 def load_data(folder, filename):
