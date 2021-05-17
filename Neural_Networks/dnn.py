@@ -263,4 +263,4 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug
 if __name__ == '__main__':
     # Pipeline that trains a neural network model on `train` argument of `train_x_test_y` function tests on `test`
     # argument of `train_x_test_y` function
-    train_x_test_y(US_DATA, EUROPE_DATA)
+    train_x_test_y(US_DATA, EUROPE_DATA, folds=5)
