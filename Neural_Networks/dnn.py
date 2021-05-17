@@ -140,6 +140,16 @@ def predict_infections_rsquare(model, test_features, test_labels):
     return result.numpy()
 
 
+def usa_features_deaths():
+    return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
+            '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+
+
+def europe_features_deaths():
+    return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
+            '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+
+
 def usa_features():
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
             '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
