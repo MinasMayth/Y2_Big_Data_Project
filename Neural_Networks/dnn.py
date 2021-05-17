@@ -7,6 +7,7 @@ from tensorflow.keras import layers
 from tensorflow.keras import Sequential
 from tensorflow_addons.metrics import RSquare
 from tensorflow.keras.utils import plot_model
+from scipy import stats
 
 # Globals for data files
 US_DATA = r'US States Data.csv'
@@ -28,7 +29,7 @@ def load_data(folder, filename):
 def plot_loss(history):
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, .25])
+    # plt.ylim([0, .25])
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.legend()
@@ -36,13 +37,13 @@ def plot_loss(history):
     plt.grid(True)
     plt.show()
 
-    plt.plot(history.history['mean_absolute_error'], label='mae')
-    plt.xlabel('Epoch')
-    plt.ylabel('MAE Value')
-    plt.title('Mean Absolute Error measurement throughout history of NN Model')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    #plt.plot(history.history['mean_absolute_error'], label='mae')
+    #plt.xlabel('Epoch')
+    #plt.ylabel('MAE Value')
+    #plt.title('Mean Absolute Error measurement throughout history of NN Model')
+    #plt.legend()
+    #plt.grid(True)
+    #plt.show()
 
 
 def build_and_compile_model(data):
@@ -52,7 +53,7 @@ def build_and_compile_model(data):
         layers.Dense(1)
     ])
 
-    model.compile(loss='mean_absolute_error', optimizer=tf.keras.optimizers.Adam(0.001))
+    model.compile(loss='mean_absolute_error', optimizer=tf.keras.optimizers.Adam(0.001), metrics="mean_absolute_error")
     return model
 
 
@@ -125,7 +126,7 @@ def plot_predictions(predictions, test_labels, train, test):
 
     a = plt.axes(aspect='equal')
     plt.scatter(test_labels, predictions)
-    print(stats.linregress(test_labels, predictions)
+    print(stats.linregress(test_labels, predictions))
     plt.xlabel('True Values [Infections]')
     plt.ylabel('Predictions [Infections]')
     lims = [0, 1]

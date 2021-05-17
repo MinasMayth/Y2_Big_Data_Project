@@ -213,5 +213,11 @@ def MultiLinearReg_train_x_test_y(train, test):
     print("EU data OLS model R^2:", r2_score(test_labels, EUpredictions2))
 
 
+
+    """
+    Section for testing hypothetical data cases
+    """
+
+
 if __name__ == "__main__":
     MultiLinearReg_train_x_test_y(US_DATA, EUROPE_DATA)
