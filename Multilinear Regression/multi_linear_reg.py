@@ -7,9 +7,10 @@ Created on Sun Mar 14 11:08:37 2021
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import explained_variance_score, mean_absolute_error
+from sklearn.metrics import explained_variance_score, mean_absolute_error, r2_score
 from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
@@ -55,6 +56,7 @@ def snsregressionplot(x, y, title, xlabel, ylabel):
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     plt.show()
+    return(stats.linregress(x,y))
 
 
 def remove_commas(data):
@@ -161,15 +163,15 @@ def MultiLinearReg_train_x_test_y(train, test):
 
     regr = linear_model.LinearRegression().fit(train_features, train_labels)
 
-    print('Regression Intercept: \n', regr.intercept_)
-    print('Regression Coefficients: \n', regr.coef_)
+    print('SKLearn Regression Intercept: \n', regr.intercept_)
+    print('SKlearn Regression Coefficients: \n', regr.coef_)
 
     importance = regr.coef_
 
     # summarize feature importance
 
     for i, v in enumerate(importance):
-        print('Feature: %0d, Score: %.5f' % (i, v))
+        print('SKLearn Feature: %0d, Score: %.5f' % (i, v))
 
     # SM model creation
     model = sm.OLS(train_labels, train_features).fit()
@@ -178,31 +180,37 @@ def MultiLinearReg_train_x_test_y(train, test):
 
     predictions1 = regr.predict(train_features)  # SKlearn model predictions
 
-    snsregressionplot(predictions1, train_labels, "SKlearn prediction results vs Actual cases (USA)",
-                      "SKLearn prediction results", "Actual Cases (USA)")
+    print(snsregressionplot(predictions1, train_labels, "SKlearn prediction results vs Actual cases (USA)",
+                      "SKLearn prediction results", "Actual Cases (USA)"))
 
-    print("US data SKlearn explained_variance_score:", explained_variance_score(train_labels, predictions1))
-    print("US data SKlearn mean_absolute_error:", mean_absolute_error(train_labels, predictions1))
+    # print("US data SKlearn model explained_variance_score:", explained_variance_score(train_labels, predictions1))
+    print("US data SKlearn model mean_absolute_error:", mean_absolute_error(train_labels, predictions1))
+    print("US data SKlearn model R^2:", r2_score(train_labels, predictions1))
 
     predictions2 = model.predict(train_features)  # OLS model predictions
 
-    snsregressionplot(predictions2, train_labels, "OLS prediction results vs Actual cases (USA)",
-                      "OLS prediction results", "Actual Cases (USA)")
+    print(snsregressionplot(predictions2, train_labels, "OLS prediction results vs Actual cases (USA)",
+                      "OLS prediction results", "Actual Cases (USA)"))
 
-    print("US data OLS explained_variance_score:", explained_variance_score(train_labels, predictions2))
+    # print("US data OLS model explained_variance_score:", explained_variance_score(train_labels, predictions2))
+    print("US data OLS model mean_absolute_error:", mean_absolute_error(train_labels, predictions2))
+    print("US data OLS model R^2:", r2_score(train_labels, predictions2))
 
     EUpredictions1 = regr.predict(test_features)
 
-    snsregressionplot(EUpredictions1, test_labels, "SKLearn prediction results vs Actual cases (EU)",
-                      "SKLearn prediction results", "Actual Cases (EU)")
-    print("EU data SKLearn explained_variance_score:", explained_variance_score(test_labels, EUpredictions1))
+    print(snsregressionplot(EUpredictions1, test_labels, "SKLearn prediction results vs Actual cases (EU)",
+                      "SKLearn prediction results", "Actual Cases (EU)"))
+    # print("EU data SKLearn model explained_variance_score:", explained_variance_score(test_labels, EUpredictions1))
+    print("EU data SKlearn model mean_absolute_error:", mean_absolute_error(test_labels, EUpredictions1))
+    print("EU data SKlearn model R^2:", r2_score(test_labels, EUpredictions1))
 
     EUpredictions2 = model.predict(test_features)
 
-    snsregressionplot(EUpredictions2, test_labels, "OLS prediction results vs Actual cases (EU)",
-                      "OLS prediction results",
-                      "Actual Cases (EU)")
-    print("EU data OLS explained_variance_score:", explained_variance_score(test_labels, EUpredictions2))
+    print(snsregressionplot(EUpredictions2, test_labels, "OLS prediction results vs Actual cases (EU)",
+                      "OLS prediction results", "Actual Cases (EU)"))
+    # print("EU data OLS model explained_variance_score:", explained_variance_score(test_labels, EUpredictions2))
+    print("EU data OLS model mean_absolute_error:", mean_absolute_error(test_labels, EUpredictions2))
+    print("EU data OLS model R^2:", r2_score(test_labels, EUpredictions2))
 
 
 if __name__ == "__main__":

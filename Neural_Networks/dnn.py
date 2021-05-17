@@ -32,6 +32,15 @@ def plot_loss(history):
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.legend()
+    plt.title('History of loss throughout training of NN Model')
+    plt.grid(True)
+    plt.show()
+
+    plt.plot(history.history['mean_absolute_error'], label='mae')
+    plt.xlabel('Epoch')
+    plt.ylabel('MAE Value')
+    plt.title('Mean Absolute Error measurement throughout history of NN Model')
+    plt.legend()
     plt.grid(True)
     plt.show()
 
@@ -116,6 +125,7 @@ def plot_predictions(predictions, test_labels, train, test):
 
     a = plt.axes(aspect='equal')
     plt.scatter(test_labels, predictions)
+    print(stats.linregress(test_labels, predictions)
     plt.xlabel('True Values [Infections]')
     plt.ylabel('Predictions [Infections]')
     lims = [0, 1]
