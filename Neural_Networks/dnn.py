@@ -171,7 +171,7 @@ def europe_features():
             '%urban pop.  (continuous data)', 'Actual cases']
 
 
-def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=10, debug=False):
+def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug=False):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
@@ -205,7 +205,7 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=10, debu
     test_labels = test_features.pop(4)
 
     # K-Fold initialization
-    k_fold = KFold(n_splits=folds, shuffle=True)
+    k_fold = KFold(n_splits=folds, shuffle=False)
     n_fold = 0
     r_squares = []
     for train_index, test_index in k_fold.split(train_features):
