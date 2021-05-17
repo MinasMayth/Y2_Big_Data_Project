@@ -254,9 +254,10 @@ def train_x_test_y(train='US States Data.csv', test='europe.csv', folds=5, debug
         # Plot model predictions against actual values
         plot_predictions(test_predictions, y_test, train, test, n_fold)
 
-    # Print average RSquare and loss
-    print(losses)
-    print(f'Mean Absolute Error: {sum(losses) / folds}')
+    # This is an average of averages (y_pred - y_actual) per epoch and we take the average of each epochs to get MAE.
+    # We repeat this for each fold. We obtain 5 MAEs. We now report on the average of those 5 MAEs.
+    print(f'Average Mean Absolute Error: {sum(losses) / folds}')
+    # Analogous with RSquares
     print(f'Average RSquare: {sum(r_squares) / folds}')
 
     # Save RSquare score and loss for each fold and store in k-folds results folder
