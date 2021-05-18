@@ -15,9 +15,6 @@ from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
 
-US_DATA = r'US States Data.csv'
-EUROPE_DATA = r'europe.csv'
-
 
 def usa_features() -> list:
     """
@@ -30,20 +27,29 @@ def usa_features() -> list:
 
 def europe_features() -> list:
     """
-        Features to be used from EU data - This should be the same as the US data
-        :return: List of column titles of Pandas Dataframes
-        """
+    Features to be used from EU data - This should be the same as the US data
+    :return: List of column titles of Pandas Dataframes
+    """
     return ['population (discrete data)', 'tests (discrete data)', 'Gini (discrete data)',
             '%urban pop. (continuous data)', 'Actual cases']
 
 
 def hypothetical1_features() -> list:
     """
-       Hypothetical Case 1 - tests is equal to population
-       :return: List of column titles of Pandas Dataframes
-       """
+    Hypothetical Case 1 - tests is equal to population
+    :return: List of column titles of Pandas Dataframes
+    """
     return ['population (discrete data)', 'tests (discrete data)', 'Gini (discrete data)',
             '%urban pop. (continuous data)', 'Actual cases']
+
+
+def testcountry_features() -> list:
+    """
+    Features to be used from EU data - This should be the same as the US data
+    :return: List of column titles of Pandas Dataframes
+    """
+    return ['population', 'tests (discrete data)', 'Gini Index',
+            'Urban Population (%)', 'Measured number of infections']
 
 
 def load_data(folder, filename):
@@ -269,6 +275,15 @@ def run_main():
     """
     Main Function
     """
+
+    US_DATA = r'US States Data.csv'
+    EUROPE_DATA = r'europe.csv'
+    TEST_COUNTRIES = r'Test Data.csv'
+
+    """
+    Train US Test EU
+    """
+
     train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, EUROPE_DATA,
                                                                                          usa_features(),
                                                                                          europe_features())
@@ -280,6 +295,23 @@ def run_main():
     predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
     predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
     predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
+
+    """
+    Train US Test Hypothetical-1 (Tests = Population EU)
+    """
+
+    train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, EUROPE_DATA,
+                                                                                         usa_features(),
+                                                                                         hypothetical1_features())
+
+    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypotheticalEU")
+    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypotheticalEU")
+
+    train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, EUROPE_DATA,
+                                                                                         usa_features(),
+                                                                                         hypothetical1_features())
+    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_Countries")
+    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries")
 
 
 if __name__ == "__main__":
