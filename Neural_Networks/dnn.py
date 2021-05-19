@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -122,10 +123,11 @@ def train_model(model, train_features, train_labels):
 
 
 def plot_predictions(predictions, test_labels, train, test, fold):
-    # Plot predictions
-
     a = plt.axes(aspect='equal')
     plt.scatter(test_labels, predictions)
+    z = np.polyfit(test_labels, predictions, 1)
+    p = np.poly1d(z)
+    plt.plot(predictions, p(predictions), "r--")
     plt.xlabel('True Values [Infections]')
     plt.ylabel('Predictions [Infections]')
     lims = [0, 1]
