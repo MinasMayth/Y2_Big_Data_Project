@@ -15,6 +15,10 @@ from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
 
+US_DATA = r'US States Data.csv'
+EUROPE_DATA = r'europe.csv'
+TEST_COUNTRIES = r'Test Data.csv'
+
 
 def usa_features() -> list:
     """
@@ -39,7 +43,7 @@ def hypothetical1_features() -> list:
     Hypothetical Case 1 - tests is equal to population
     :return: List of column titles of Pandas Dataframes
     """
-    return ['population (discrete data)', 'tests (discrete data)', 'Gini (discrete data)',
+    return ['population (discrete data)', 'population (discrete data)', 'Gini (discrete data)',
             '%urban pop. (continuous data)', 'Actual cases']
 
 
@@ -48,7 +52,7 @@ def testcountry_features() -> list:
     Features to be used from EU data - This should be the same as the US data
     :return: List of column titles of Pandas Dataframes
     """
-    return ['population', 'tests (discrete data)', 'Gini Index',
+    return ['Population', 'Gini Index',
             'Urban Population (%)', 'Measured number of infections']
 
 
@@ -82,7 +86,6 @@ def snsregressionplot(x, y, title, xlabel, ylabel):
     plt.show()
     return stats.linregress(x, y)
 
-
 def remove_commas(data):
     """
     Remove commas from a pandas dataset
@@ -97,7 +100,7 @@ def remove_commas(data):
     return data
 
 
-def split_data(data, fraction=0.6, index_of_dependent_feature=4):
+def split_data(data, fraction=0.6):
     """
     train_test split data
     :param data: pandas dataframe
@@ -117,8 +120,8 @@ def split_data(data, fraction=0.6, index_of_dependent_feature=4):
     train_features = train_dataset.copy()
     test_features = test_dataset.copy()
 
-    train_labels = train_features.pop(index_of_dependent_feature)
-    test_labels = test_features.pop(index_of_dependent_feature)
+    train_labels = train_features.pop(train_features.columns[-1])
+    test_labels = test_features.pop(test_features.columns[-1])
 
     return train_features, train_labels, test_features, test_labels
 
@@ -167,7 +170,7 @@ def preprocess_data(data, features):
     return data.dropna()
 
 
-def main_split_and_preprocess(train, test, train_features, test_features):
+def main_split_and_preprocess(train, test, train_features, test_features, set1 = US_DATA, set2 = EUROPE_DATA):
     """
     Main function to preprocess data and split into features and labels
     :param train: Data to train on
@@ -182,7 +185,7 @@ def main_split_and_preprocess(train, test, train_features, test_features):
         train_test_split = True
 
     # Helper dict object
-    data_dict = {US_DATA: train_features, EUROPE_DATA: test_features}
+    data_dict = {set1: train_features, set2: test_features}
 
     # Load in training data
     train_data = load_data('Project Data', train)
@@ -194,15 +197,24 @@ def main_split_and_preprocess(train, test, train_features, test_features):
         # Select some features to train on
         train_features = data_dict[train]
 
+        # clean_and_convert_data(train_data, train_features, "USAtrain")
+
         # Preprocess train data by cleaning and normalizing
         train_features = preprocess_data(train_data, train_features)
-        train_labels = train_features.pop(4)
+
+
+
+        #Save the last column to train_labels, this should be the dependent feature
+        train_labels = train_features.pop(train_features.columns[-1])
 
         # Select some testing features
         test_features = data_dict[test]
+
+        # clean_and_convert_data(test_data, test_features, "EUtest")
         # Select features and clean data
         test_features = preprocess_data(test_data, test_features)
-        test_labels = test_features.pop(4)
+
+        test_labels = test_features.pop(test_features.columns[-1])
     else:
         train_features = data_dict[train]
         train_data = preprocess_data(train_data, train_features)
@@ -266,7 +278,7 @@ def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", data
                             model_type + " Predicted Results vs Actual Results (" + dataset + ")",
                             xlabel=model_type + " Predicted Results", ylabel="Actual Results (" + dataset + ")"))
 
-    print(dataset + "data " + model_type + " model mean_absolute_error:",
+    print(dataset + " data " + model_type + " model mean_absolute_error:",
           mean_absolute_error(actual_values, predictions))
     print(dataset + " data " + model_type + " model R^2:", r2_score(actual_values, predictions), "\n")
 
@@ -276,9 +288,7 @@ def run_main():
     Main Function
     """
 
-    US_DATA = r'US States Data.csv'
-    EUROPE_DATA = r'europe.csv'
-    TEST_COUNTRIES = r'Test Data.csv'
+
 
     """
     Train US Test EU
@@ -306,13 +316,14 @@ def run_main():
 
     predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypotheticalEU")
     predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypotheticalEU")
-
-    train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, EUROPE_DATA,
+    """
+    train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
                                                                                          usa_features(),
-                                                                                         hypothetical1_features())
-    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_Countries")
-    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries")
+                                                                                         testcountry_features(), set2=TEST_COUNTRIES)
+    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries")
+    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries")"""
 
 
 if __name__ == "__main__":
+
     run_main()
