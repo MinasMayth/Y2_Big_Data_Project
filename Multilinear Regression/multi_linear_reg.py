@@ -15,8 +15,8 @@ from sklearn import linear_model
 import statsmodels.api as sm
 import seaborn as sns
 
-US_DATA = r'US States Data.csv'
-EUROPE_DATA = r'europe.csv'
+US_DATA = r'USAclean.csv'
+EUROPE_DATA = r'EUclean.csv'
 TEST_COUNTRIES = r'Test Data.csv'
 
 
@@ -80,6 +80,8 @@ def snsregressionplot(x, y, title, xlabel, ylabel):
     """
     fig = plt.figure()
     ax = sns.regplot(x=x, y=y.astype(float), ci=None, color="b")
+    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)),
+             color='red')
     ax.title.set_text(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)

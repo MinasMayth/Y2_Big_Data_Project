@@ -6,12 +6,13 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
 from tensorflow.keras import Sequential
 from tensorflow_addons.metrics import RSquare
+import numpy as np
 from tensorflow.keras.utils import plot_model
 from scipy import stats
 
 # Globals for data files
-US_DATA = r'US States Data.csv'
-EUROPE_DATA = r'europe.csv'
+US_DATA = r'USAclean.csv'
+EUROPE_DATA = r'EUclean.csv'
 
 
 def load_data(folder, filename):
@@ -134,6 +135,7 @@ def plot_predictions(predictions, test_labels, train, test):
     plt.ylim(lims)
     plt.title(f'Trained on {train} predicting on {test}')
     _ = plt.plot(lims, lims)
+    plt.plot(np.unique(test_labels), np.poly1d(np.polyfit(test_labels, predictions, 1))(np.unique(test_labels)), color='red')
     plt.show()
 
 
@@ -150,16 +152,39 @@ def predict_infections_rsquare(model, test_features, test_labels):
     # Return result
     return result.numpy()
 
-
-def usa_features():
+def usa_features() -> list:
+    """
+    Features to be used from USA data
+    :return: List of column titles of Pandas Dataframes
+    """
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
             '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
 
+def europe_features() -> list:
+    """
+    Features to be used from EU data - This should be the same as the US data
+    :return: List of column titles of Pandas Dataframes
+    """
+    return ['population (discrete data)', 'tests (discrete data)', 'Gini (discrete data)',
+            '%urban pop. (continuous data)', 'Actual cases']
 
-def europe_features():
-    return ['population (discrete data)', 'tests     (discrete data)', 'Gini      (discrete data)',
-            '%urban pop.  (continuous data)', 'Actual cases']
 
+def hypothetical1_features() -> list:
+    """
+    Hypothetical Case 1 - tests is equal to population
+    :return: List of column titles of Pandas Dataframes
+    """
+    return ['population (discrete data)', 'population (discrete data)', 'Gini (discrete data)',
+            '%urban pop. (continuous data)', 'Actual cases']
+
+
+def testcountry_features() -> list:
+    """
+    Features to be used from EU data - This should be the same as the US data
+    :return: List of column titles of Pandas Dataframes
+    """
+    return ['Population', 'Gini Index',
+            'Urban Population (%)', 'Measured number of infections']
 
 def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
     """
