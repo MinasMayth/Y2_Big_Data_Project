@@ -13,6 +13,7 @@ from scipy import stats
 # Globals for data files
 US_DATA = r'USAclean.csv'
 EUROPE_DATA = r'EUclean.csv'
+TEST_COUNTRIES = r'Test Data.csv'
 
 
 def load_data(folder, filename):
@@ -23,7 +24,7 @@ def load_data(folder, filename):
     :param filename: .csv file to load
     :return: pandas.Dataframe of corresponding .csv
     """
-    csv_data = pd.read_csv(os.path.join('..', folder, filename))
+    csv_data = pd.read_csv(os.path.join(folder, filename))
     return csv_data
 
 
@@ -38,13 +39,13 @@ def plot_loss(history):
     plt.grid(True)
     plt.show()
 
-    #plt.plot(history.history['mean_absolute_error'], label='mae')
-    #plt.xlabel('Epoch')
-    #plt.ylabel('MAE Value')
-    #plt.title('Mean Absolute Error measurement throughout history of NN Model')
-    #plt.legend()
-    #plt.grid(True)
-    #plt.show()
+    # plt.plot(history.history['mean_absolute_error'], label='mae')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('MAE Value')
+    # plt.title('Mean Absolute Error measurement throughout history of NN Model')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
 
 def build_and_compile_model(data):
@@ -135,7 +136,8 @@ def plot_predictions(predictions, test_labels, train, test):
     plt.ylim(lims)
     plt.title(f'Trained on {train} predicting on {test}')
     _ = plt.plot(lims, lims)
-    plt.plot(np.unique(test_labels), np.poly1d(np.polyfit(test_labels, predictions, 1))(np.unique(test_labels)), color='red')
+    plt.plot(np.unique(test_labels), np.poly1d(np.polyfit(test_labels, predictions, 1))(np.unique(test_labels)),
+             color='red')
     plt.show()
 
 
@@ -152,6 +154,7 @@ def predict_infections_rsquare(model, test_features, test_labels):
     # Return result
     return result.numpy()
 
+
 def usa_features() -> list:
     """
     Features to be used from USA data
@@ -159,6 +162,7 @@ def usa_features() -> list:
     """
     return ['Population (discrete data)', 'Tests (discrete data)', 'Gini - gov 2019 (continuous data)',
             '% urban population (continuous data)', 'Actual cases (measured) (discrete data)']
+
 
 def europe_features() -> list:
     """
@@ -183,13 +187,19 @@ def testcountry_features() -> list:
     Features to be used from EU data - This should be the same as the US data
     :return: List of column titles of Pandas Dataframes
     """
-    return ['Population', 'Gini Index',
+    return ['Population', 'Gini Index', 'Number of tests',
             'Urban Population (%)', 'Measured number of infections']
 
-def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
+
+def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv', setx=US_DATA, sety=EUROPE_DATA,
+                   featuresx=usa_features(), featuresy=europe_features()):
     """
     Trains a neural network model on the 'x' dataset and predicts infection rates on the 'y' dataset. The function
     plots the actual vs predicted values and computes the RSquare coefficient of the model.
+    :param setx:
+    :param sety:
+    :param featuresx:
+    :param featuresy:
     :param train: The dataset that the model will train on.
     :param test: The dataset that the model will test on.
     :return: None
@@ -201,7 +211,7 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
         train_test_split = True
 
     # Helper dict object
-    data_dict = {US_DATA: usa_features(), EUROPE_DATA: europe_features()}
+    data_dict = {setx: featuresx, sety: featuresy}
 
     # Load in training data
     train_data = load_data('Project Data', train)
@@ -255,9 +265,23 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv'):
     # Plot model predictions against actual values
     plot_predictions(test_predictions, test_labels, train, test)
 
+    return(test_predictions)
+
 
 if __name__ == '__main__':
     # Pipeline that trains a multilinear regression model on `train` argument
     # of `train_x_test_y` function tests on `test`
     # argument of `train_x_test_y` function
-    train_x_test_y(US_DATA, EUROPE_DATA)
+
+    original_predictions = train_x_test_y(US_DATA, EUROPE_DATA)
+
+    EU_tostore = load_data('Project Data', EUROPE_DATA)
+
+    EU_tostore['Neural network Predictions EU'] = testSK
+    test_tostore['Statsmodel Predictions Hypothetical EU'] = testSM
+
+    test_tostore.to_csv('Final Test Country Data.csv')
+
+    hypo_predictions = train_x_test_y(US_DATA,EUROPE_DATA, featuresy=hypothetical1_features())
+
+    test_predictions = train_x_test_y(US_DATA, TEST_COUNTRIES, sety=TEST_COUNTRIES, featuresy=testcountry_features())

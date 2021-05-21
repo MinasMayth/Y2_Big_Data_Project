@@ -52,7 +52,7 @@ def testcountry_features() -> list:
     Features to be used from EU data - This should be the same as the US data
     :return: List of column titles of Pandas Dataframes
     """
-    return ['Population', 'Gini Index',
+    return ['Population', 'Gini Index','Number of tests',
             'Urban Population (%)', 'Measured number of infections']
 
 
@@ -63,7 +63,7 @@ def load_data(folder, filename):
     :param filename: .csv file to load
     :return: pandas.Dataframe of corresponding .csv
     """
-    csv_data = pd.read_csv(os.path.join('..', folder, filename))
+    csv_data = pd.read_csv(os.path.join(folder, filename))
     return csv_data
 
 
@@ -163,7 +163,7 @@ def preprocess_data(data, features):
 
     # Normalize data
     x = data.values  # returns a numpy array
-
+    global min_max_scaler
     min_max_scaler = MinMaxScaler()
     x_scaled = min_max_scaler.fit_transform(x)
     data = pd.DataFrame(x_scaled)
@@ -274,7 +274,7 @@ def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", data
     :param dataset: string for mentioning which dataset is being analysed
     :return:
     """
-    predictions = model.predict(to_predict)  # SKlearn model predictions
+    predictions = model.predict(to_predict)  # model predictions
 
     print(snsregressionplot(predictions, actual_values,
                             model_type + " Predicted Results vs Actual Results (" + dataset + ")",
@@ -283,6 +283,8 @@ def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", data
     print(dataset + " data " + model_type + " model mean_absolute_error:",
           mean_absolute_error(actual_values, predictions))
     print(dataset + " data " + model_type + " model R^2:", r2_score(actual_values, predictions), "\n")
+
+    return min_max_scaler.inverse_transform(predictions)
 
 
 def run_main():
@@ -303,12 +305,23 @@ def run_main():
     SKlearn_model = SK_build_model(train_features, train_labels)
     SM_model = SM_build_model(train_features, train_labels)
 
-    predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
-    predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
-    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
-    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
+    SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
+    SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
 
-    """
+    US_tostore = load_data('Project Data', US_DATA)
+    US_tostore['SKLearn Predictions US'] = SKpredictionsUS
+    US_tostore['Statsmodel Predictions US'] = SMpredictionsUS
+
+    US_tostore.to_csv('Final US Data.csv')
+
+    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
+    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
+
+    EU_tostore = load_data('Project Data', EUROPE_DATA)
+    EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
+    EU_tostore['Statsmodel Predictions EU'] = SMpredictionsEU
+
+    """"
     Train US Test Hypothetical-1 (Tests = Population EU)
     """
 
@@ -316,14 +329,26 @@ def run_main():
                                                                                          usa_features(),
                                                                                          hypothetical1_features())
 
-    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypotheticalEU")
-    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypotheticalEU")
-    """
+    HypoSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypotheticalEU")
+    HypoSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypotheticalEU")
+
+    EU_tostore['SKLearn Predictions Hypothetical EU'] = HypoSK
+    EU_tostore['Statsmodel Predictions Hypothetical EU'] = HypoSM
+
+    EU_tostore.to_csv('Final EU Data.csv')
+
     train_features, train_labels, test_features, test_labels = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
                                                                                          usa_features(),
                                                                                          testcountry_features(), set2=TEST_COUNTRIES)
-    predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries")
-    predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries")"""
+    testSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries")
+    testSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries")
+
+    test_tostore = load_data('Project Data', TEST_COUNTRIES)
+
+    test_tostore['SKLearn Predictions Hypothetical EU'] = testSK
+    test_tostore['Statsmodel Predictions Hypothetical EU'] = testSM
+
+    test_tostore.to_csv('Final Test Country Data.csv')
 
 
 if __name__ == "__main__":

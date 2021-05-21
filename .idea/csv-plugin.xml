@@ -3,6 +3,27 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\Final EU Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Final Test Country Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Final US Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Project Data\Test Data.csv">
           <value>
             <Attribute>
@@ -11,6 +32,13 @@
           </value>
         </entry>
         <entry key="\Project Data\US States Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Project Data\USAclean.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -53,6 +81,13 @@
           </value>
         </entry>
         <entry key="\Time Series Data\time_series_covid19_recovered_global.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\resultsMLR1.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
