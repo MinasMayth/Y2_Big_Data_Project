@@ -3,21 +3,42 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\Final EU Data.csv">
+        <entry key="\Multilinear Regression\Final EU Data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="\Final Test Country Data.csv">
+        <entry key="\Multilinear Regression\Final Test Country Data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="\Final US Data.csv">
+        <entry key="\Multilinear Regression\Final US Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Neural_Networks\NNEU.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Neural_Networks\NNtest.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Project Data\EUclean.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -81,13 +102,6 @@
           </value>
         </entry>
         <entry key="\Time Series Data\time_series_covid19_recovered_global.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\resultsMLR1.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

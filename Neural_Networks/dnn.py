@@ -4,6 +4,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import Sequential
 from tensorflow_addons.metrics import RSquare
 import numpy as np
@@ -19,12 +20,11 @@ TEST_COUNTRIES = r'Test Data.csv'
 def load_data(folder, filename):
     """
     Loads a csv file from the 'Project Data' directory and returns it as a pandas.Dataframe object.
-
     :param folder: from which folder to load data
     :param filename: .csv file to load
     :return: pandas.Dataframe of corresponding .csv
     """
-    csv_data = pd.read_csv(os.path.join(folder, filename))
+    csv_data = pd.read_csv(os.path.join(os.getcwd(), "..", folder, filename))
     return csv_data
 
 
@@ -35,7 +35,7 @@ def plot_loss(history):
     plt.xlabel('Epoch')
     plt.ylabel('Error [Actual Cases]')
     plt.legend()
-    plt.title('History of loss throughout training of NN Model')
+    # plt.title('History of loss throughout training of NN Model')
     plt.grid(True)
     plt.show()
 
@@ -86,11 +86,24 @@ def preprocess_data(data, features):
     print(x.shape)
 
     min_max_scaler = MinMaxScaler()
-    x_scaled = min_max_scaler.fit_transform(x)
+    global x_scaler
+    x_scaler = min_max_scaler.fit(x)
+    x_scaled = x_scaler.transform(x)
     data = pd.DataFrame(x_scaled)
 
     # Clean data by dropping NA rows
     return data.dropna()
+
+
+def unscale_data(features, labels):
+    results = np.concatenate((features, labels[:, None]), axis=1)
+
+    rescaled_results = x_scaler.inverse_transform(results)
+
+    features = rescaled_results[:, 0:-2]
+    labels = rescaled_results[:, -1]
+
+    return features, labels
 
 
 def split_data(data):
@@ -113,7 +126,11 @@ def split_data(data):
 
 def train_model(model, train_features, train_labels):
     print(train_features.shape)
-
+    kfold_weights_path = 'checkpoint'
+    callbacks = [
+        EarlyStopping(monitor='val_loss', patience=4, verbose=1, mode='min'),
+        ModelCheckpoint(kfold_weights_path, monitor='val_loss', save_best_only=True, verbose=1),
+    ]
     # Train model on data
     history = model.fit(
         train_features, train_labels,
@@ -129,13 +146,14 @@ def plot_predictions(predictions, test_labels, train, test):
     a = plt.axes(aspect='equal')
     plt.scatter(test_labels, predictions)
     print(stats.linregress(test_labels, predictions))
-    plt.xlabel('True Values [Infections]')
-    plt.ylabel('Predictions [Infections]')
-    lims = [0, 1]
+    plt.xlabel('Actual Cases')
+    plt.ylabel('Predicted Cases')
+    lims = [0, max([max(test_labels), max(predictions)])]
     plt.xlim(lims)
     plt.ylim(lims)
-    plt.title(f'Trained on {train} predicting on {test}')
+    # plt.title(f'Trained on {train} predicting on {test}')
     _ = plt.plot(lims, lims)
+    plt.tight_layout()
     plt.plot(np.unique(test_labels), np.poly1d(np.polyfit(test_labels, predictions, 1))(np.unique(test_labels)),
              color='red')
     plt.show()
@@ -175,10 +193,10 @@ def europe_features() -> list:
 
 def hypothetical1_features() -> list:
     """
-    Hypothetical Case 1 - tests is equal to population
+    Hypothetical Case 1 - tests is equal to 1.1 * population
     :return: List of column titles of Pandas Dataframes
     """
-    return ['population (discrete data)', 'population (discrete data)', 'Gini (discrete data)',
+    return ['population (discrete data)', 'Pop*1.1', 'Gini (discrete data)',
             '%urban pop. (continuous data)', 'Actual cases']
 
 
@@ -188,6 +206,15 @@ def testcountry_features() -> list:
     :return: List of column titles of Pandas Dataframes
     """
     return ['Population', 'Gini Index', 'Number of tests',
+            'Urban Population (%)', 'Measured number of infections']
+
+
+def hypothetical2_features() -> list:
+    """
+    Hypothetical Case 2 - tests is equal to 1*1 population (for test countries
+    :return: List of column titles of Pandas Dataframes
+    """
+    return ['Population', 'Pop*1.1', 'Gini Index',
             'Urban Population (%)', 'Measured number of infections']
 
 
@@ -262,10 +289,13 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv', setx=US_DATA
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
 
+    test_features1, test_labels = unscale_data(test_features, test_labels)
+    test_features, test_predictions = unscale_data(test_features, test_predictions)
+
     # Plot model predictions against actual values
     plot_predictions(test_predictions, test_labels, train, test)
 
-    return(test_predictions)
+    return (test_predictions)
 
 
 if __name__ == '__main__':
@@ -275,13 +305,27 @@ if __name__ == '__main__':
 
     original_predictions = train_x_test_y(US_DATA, EUROPE_DATA)
 
+    hypo_predictions = train_x_test_y(US_DATA, EUROPE_DATA, featuresy=hypothetical1_features())
+
     EU_tostore = load_data('Project Data', EUROPE_DATA)
 
-    EU_tostore['Neural network Predictions EU'] = testSK
-    test_tostore['Statsmodel Predictions Hypothetical EU'] = testSM
+    EU_tostore['Neural network Predictions EU'] = original_predictions
+    EU_tostore['Neural network Predictions EU'] = hypo_predictions
 
-    test_tostore.to_csv('Final Test Country Data.csv')
+    EU_tostore.to_csv('NNEU.csv')
+    EU_tostore.to_excel('NNEU.xlsx')
 
-    hypo_predictions = train_x_test_y(US_DATA,EUROPE_DATA, featuresy=hypothetical1_features())
+
 
     test_predictions = train_x_test_y(US_DATA, TEST_COUNTRIES, sety=TEST_COUNTRIES, featuresy=testcountry_features())
+
+    test_tostore = load_data('Project Data', TEST_COUNTRIES)
+
+    test_tostore['Neural network Predictions test countries'] = test_predictions
+
+    test_predictions2 = train_x_test_y(US_DATA, TEST_COUNTRIES, sety=TEST_COUNTRIES, featuresy=hypothetical2_features())
+
+    test_tostore['Neural network Predictions hypothetical test countries'] = test_predictions2
+
+    test_tostore.to_csv('NNtest.csv')
+    test_tostore.to_excel('NNtest.xlsx')
