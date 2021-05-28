@@ -327,22 +327,22 @@ def run_main():
     SKlearn_model = SK_build_model(train_features, train_labels)
     SM_model = SM_build_model(train_features, train_labels)
 
-    SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
-    SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
+    #SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
+    #SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
 
-    US_tostore = load_data('Project Data', US_DATA)
-    US_tostore['SKLearn Predictions US'] = SKpredictionsUS
-    US_tostore['Statsmodel Predictions US'] = SMpredictionsUS
+    #US_tostore = load_data('Project Data', US_DATA)
+    #US_tostore['SKLearn Predictions US'] = SKpredictionsUS
+    #US_tostore['Statsmodel Predictions US'] = SMpredictionsUS
 
-    US_tostore.to_csv('Final US Data.csv')
-    US_tostore.to_excel('Final US Data.xlsx')
+    #US_tostore.to_csv('Final US Data.csv')
+    #US_tostore.to_excel('Final US Data.xlsx')
 
-    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
-    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
+    #SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
+    #SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
 
     EU_tostore = load_data('Project Data', EUROPE_DATA)
-    EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
-    EU_tostore['Statsmodel Predictions EU'] = SMpredictionsEU
+    #EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
+    #EU_tostore['Statsmodel Predictions EU'] = SMpredictionsEU
 
     """"
     Train US Test Hypothetical-1 (Tests = Population EU)
@@ -352,8 +352,8 @@ def run_main():
                                                                                          usa_features(),
                                                                                          hypothetical1_features())
 
-    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypotheticalEU")
-    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypotheticalEU")
+    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Tests = 1.1 * Population")
+    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Tests = 1.1 * Population")
 
     EU_tostore['SKLearn Predictions Hypothetical EU'] = Hypo1SK
     EU_tostore['Statsmodel Predictions Hypothetical EU'] = Hypo1SM
