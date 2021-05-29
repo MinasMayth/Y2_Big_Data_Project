@@ -40,7 +40,7 @@ def europe_features() -> list:
 
 def hypothetical1_features() -> list:
     """
-    Hypothetical Case 1 - tests is equal to 1.1 * population
+    Hypothetical Case 1 - tests is equal to 1.1 * population (this is for the European dataset)
     :return: List of column titles of Pandas Dataframes
     """
     return ['population (discrete data)', 'Pop*1.1', 'Gini (discrete data)',
@@ -58,7 +58,7 @@ def testcountry_features() -> list:
 
 def hypothetical2_features() -> list:
     """
-    Hypothetical Case 1 - tests is equal to population
+    Hypothetical Case 1 - tests is equal to population (this is for the test country dataset)
     :return: List of column titles of Pandas Dataframes
     """
     return ['Population', 'Pop*1.1', 'Gini Index',
@@ -327,22 +327,22 @@ def run_main():
     SKlearn_model = SK_build_model(train_features, train_labels)
     SM_model = SM_build_model(train_features, train_labels)
 
-    #SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
-    #SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
+    SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US")
+    SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US")
 
-    #US_tostore = load_data('Project Data', US_DATA)
-    #US_tostore['SKLearn Predictions US'] = SKpredictionsUS
-    #US_tostore['Statsmodel Predictions US'] = SMpredictionsUS
+    US_tostore = load_data('Project Data', US_DATA)
+    US_tostore['SKLearn Predictions US'] = SKpredictionsUS
+    US_tostore['Statsmodel Predictions US'] = SMpredictionsUS
 
-    #US_tostore.to_csv('Final US Data.csv')
-    #US_tostore.to_excel('Final US Data.xlsx')
+    US_tostore.to_csv('Final US Data.csv')
+    US_tostore.to_excel('Final US Data.xlsx')
 
-    #SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
-    #SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
+    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU")
+    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU")
 
     EU_tostore = load_data('Project Data', EUROPE_DATA)
-    #EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
-    #EU_tostore['Statsmodel Predictions EU'] = SMpredictionsEU
+    EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
+    EU_tostore['Statsmodel Predictions EU'] = SMpredictionsEU
 
     """"
     Train US Test Hypothetical-1 (Tests = Population EU)
@@ -378,10 +378,10 @@ def run_main():
 
     test_tostore = load_data('Project Data', TEST_COUNTRIES)
 
-    test_tostore['SKLearn Predictions normal EU'] = testSK
-    test_tostore['Statsmodel Predictions normal EU'] = testSM
-    test_tostore['SKLearn Predictions Hypothetical EU'] = HypotestSK
-    test_tostore['Statsmodel Predictions Hypothetical EU'] = HypotestSM
+    test_tostore['SKLearn Predictions normal test'] = testSK
+    test_tostore['Statsmodel Predictions normal test'] = testSM
+    test_tostore['SKLearn Predictions Hypothetical test'] = HypotestSK
+    test_tostore['Statsmodel Predictions Hypothetical test'] = HypotestSM
 
     test_tostore.to_csv('Final Test Country Data.csv')
     test_tostore.to_excel('Final Test Data.xlsx')

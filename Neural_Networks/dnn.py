@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import Sequential
-from tensorflow_addons.metrics import RSquare
+#from tensorflow_addons.metrics import RSquare
 import numpy as np
 from tensorflow.keras.utils import plot_model
 from scipy import stats
