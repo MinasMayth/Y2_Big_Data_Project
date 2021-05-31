@@ -3,6 +3,20 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\EUclean.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Multilinear Regression\Final Predictions\Final EU Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Multilinear Regression\Final Predictions\Final Test Country Data.csv">
           <value>
             <Attribute>
@@ -10,7 +24,21 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Multilinear Regression\Final Test Country Data.csv">
+        <entry key="\Multilinear Regression\Final Predictions\Final US Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Neural_Networks\Final Predictions\NNEU.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Neural_Networks\Final Predictions\NNtest.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -18,6 +46,13 @@
           </value>
         </entry>
         <entry key="\Project Data\EUclean.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Project Data\Predictions_new.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -52,6 +87,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Project Data\unused_data\europe.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Test Data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Time Series Data\US Counties\covid_confirmed_usafacts.csv">
           <value>
             <Attribute>
@@ -74,6 +123,13 @@
           </value>
         </entry>
         <entry key="\Time Series Data\time_series_covid19_recovered_global.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\USAclean.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras import Sequential
-#from tensorflow_addons.metrics import RSquare
+from tensorflow_addons.metrics import RSquare
 import numpy as np
 from tensorflow.keras.utils import plot_model
 from scipy import stats
@@ -24,7 +24,7 @@ def load_data(folder, filename):
     :param filename: .csv file to load
     :return: pandas.Dataframe of corresponding .csv
     """
-    csv_data = pd.read_csv(os.path.join(os.getcwd(), "..", folder, filename))
+    csv_data = pd.read_csv(os.path.join(os.getcwd(), ".", folder, filename))
     return csv_data
 
 
@@ -135,7 +135,7 @@ def train_model(model, train_features, train_labels):
     history = model.fit(
         train_features, train_labels,
         validation_split=0.2,
-        verbose=1, epochs=100)
+        verbose=1, epochs=100, callbacks=callbacks)
 
     return model, history
 

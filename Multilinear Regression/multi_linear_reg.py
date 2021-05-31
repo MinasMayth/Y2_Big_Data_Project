@@ -72,7 +72,7 @@ def load_data(folder, filename):
     :param filename: .csv file to load
     :return: pandas.Dataframe of corresponding .csv
     """
-    csv_data = pd.read_csv(os.path.join(os.getcwd(), "..", folder, filename))
+    csv_data = pd.read_csv(os.path.join(os.getcwd(), ".", folder, filename))
     return csv_data
 
 

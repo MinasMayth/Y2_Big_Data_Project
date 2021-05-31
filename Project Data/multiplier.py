@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-us = pd.read_csv('USAclean.csv')
-eu = pd.read_csv('EUclean.csv')
-test = pd.read_csv('Test Data.csv')
+us = pd.read_csv(r'Project Data/USAclean.csv')
+eu = pd.read_csv(r'Project Data/EUclean.csv')
+test = pd.read_csv(r'Project Data/Predictions_new.csv')
 
 
 us['Pop*1.1'] = us['Population (discrete data)']*1.1
