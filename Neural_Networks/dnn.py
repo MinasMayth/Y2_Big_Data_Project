@@ -72,6 +72,12 @@ def remove_commas(data):
 
 
 def preprocess_data(data, features):
+    """
+    Select features, clean data, normalize and scale data
+    :param data: dataset to preprocess
+    :param features: features to select
+    :return: preprocessed dataset
+    """
     # Select only certain features in the preprocessing pipeline
     data = data[features]
 
@@ -83,22 +89,43 @@ def preprocess_data(data, features):
 
     # Normalize data
     x = data.values  # returns a numpy array
-    print(x.shape)
 
     min_max_scaler = MinMaxScaler()
-    global x_scaler
     x_scaler = min_max_scaler.fit(x)
     x_scaled = x_scaler.transform(x)
     data = pd.DataFrame(x_scaled)
 
     # Clean data by dropping NA rows
+    return data.dropna(), x_scaler
+
+def preprocess_testing_data(data, features, x_scaler):
+    """
+    Select features, clean data, normalize and scale data
+    :param data: dataset to preprocess
+    :param features: features to select
+    :return: preprocessed dataset
+    """
+    # Select only certain features in the preprocessing pipeline
+    data = data[features]
+
+    # Remove potential commas present in the .csv
+    data = remove_commas(data)
+
+    # One-hot encode categorical variables (might be useful if we decide to use categorical variables)
+    # data = pd.get_dummies(data)
+
+    # Normalize data
+    x = data.values  # returns a numpy array
+    x_scaled = x_scaler.transform(x)
+    data = pd.DataFrame(x_scaled)
+
     return data.dropna()
 
 
-def unscale_data(features, labels):
+def unscale_data(features, labels, scaler):
     results = np.concatenate((features, labels[:, None]), axis=1)
 
-    rescaled_results = x_scaler.inverse_transform(results)
+    rescaled_results = scaler.inverse_transform(results)
 
     features = rescaled_results[:, 0:-2]
     labels = rescaled_results[:, -1]
@@ -214,7 +241,7 @@ def hypothetical2_features() -> list:
     Hypothetical Case 2 - tests is equal to 1*1 population (for test countries
     :return: List of column titles of Pandas Dataframes
     """
-    return ['Population', 'Pop*1.1', 'Gini Index',
+    return ['Population', 'Gini Index', 'Pop*1.1',
             'Urban Population (%)', 'Measured number of infections']
 
 
@@ -251,14 +278,14 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv', setx=US_DATA
         train_features = data_dict[train]
 
         # Preprocess train data by cleaning and normalizing
-        train_features = preprocess_data(train_data, train_features)
+        train_features, train_scaler = preprocess_data(train_data, train_features)
         train_labels = train_features.pop(4)
 
         # Select some testing features
         test_features = data_dict[test]
 
         # Select features and clean data
-        test_features = preprocess_data(test_data, test_features)
+        test_features = preprocess_testing_data(test_data, test_features, train_scaler)
         test_labels = test_features.pop(4)
     else:
         train_features = data_dict[train]
@@ -289,8 +316,8 @@ def train_x_test_y(train=r'US States Data.csv', test=r'europe.csv', setx=US_DATA
     # Get predictions of model on test data
     test_predictions = model.predict(test_features).flatten()
 
-    test_features1, test_labels = unscale_data(test_features, test_labels)
-    test_features, test_predictions = unscale_data(test_features, test_predictions)
+    test_features1, test_labels = unscale_data(test_features, test_labels, train_scaler)
+    test_features, test_predictions = unscale_data(test_features, test_predictions, train_scaler)
 
     # Plot model predictions against actual values
     plot_predictions(test_predictions, test_labels, train, test)
@@ -310,7 +337,7 @@ if __name__ == '__main__':
     EU_tostore = load_data('Project Data', EUROPE_DATA)
 
     EU_tostore['Neural network Predictions EU'] = original_predictions
-    EU_tostore['Neural network Predictions EU'] = hypo_predictions
+    EU_tostore['Neural network Predictions Hypo EU'] = hypo_predictions
 
     EU_tostore.to_csv('NNEU.csv')
     EU_tostore.to_excel('NNEU.xlsx')

@@ -182,6 +182,30 @@ def preprocess_data(data, features):
     # Clean data by dropping NA rows
     return data.dropna(), x_scaler
 
+def preprocess_testing_data(data, features, x_scaler):
+    """
+    Select features, clean data, normalize and scale data
+    :param data: dataset to preprocess
+    :param features: features to select
+    :return: preprocessed dataset
+    """
+    # Select only certain features in the preprocessing pipeline
+    data = data[features]
+
+    # Remove potential commas present in the .csv
+    data = remove_commas(data)
+
+    # One-hot encode categorical variables (might be useful if we decide to use categorical variables)
+    # data = pd.get_dummies(data)
+
+    # Normalize data
+    x = data.values  # returns a numpy array
+    x_scaled = x_scaler.transform(x)
+    data = pd.DataFrame(x_scaled)
+
+    # Clean data by dropping NA rows
+    return data.dropna()
+
 
 def main_split_and_preprocess(train, test, train_features, test_features, set1=US_DATA, set2=EUROPE_DATA):
     """
@@ -223,7 +247,7 @@ def main_split_and_preprocess(train, test, train_features, test_features, set1=U
 
         # clean_and_convert_data(test_data, test_features, "EUtest")
         # Select features and clean data
-        test_features, test_scaler = preprocess_data(test_data, test_features)
+        test_features = preprocess_testing_data(test_data, test_features, train_scaler)
 
         test_labels = test_features.pop(test_features.columns[-1])
     else:
@@ -231,7 +255,7 @@ def main_split_and_preprocess(train, test, train_features, test_features, set1=U
         train_data = preprocess_data(train_data, train_features)
         train_features, train_labels, test_features, test_labels = split_data(train_data)
 
-    return train_features, train_labels, test_features, test_labels, train_scaler, test_scaler
+    return train_features, train_labels, test_features, test_labels, train_scaler
 
 
 def SK_build_model(train_features, train_labels):
@@ -319,7 +343,7 @@ def run_main():
     Train US Test EU
     """
 
-    train_features, train_labels, test_features, test_labels, train_scaler, test_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
+    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
                                                                                          usa_features(),
                                                                                          europe_features())
 
@@ -336,8 +360,8 @@ def run_main():
     US_tostore.to_csv('Final US Data.csv')
     US_tostore.to_excel('Final US Data.xlsx')
 
-    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU", test_scaler)
-    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU", test_scaler)
+    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU", train_scaler)
+    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU", train_scaler)
 
     EU_tostore = load_data('Project Data', EUROPE_DATA)
     EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
@@ -347,12 +371,12 @@ def run_main():
     Train US Test Hypothetical-1 (Tests = Population EU)
     """
 
-    train_features, train_labels, test_features, test_labels, train_scaler, test_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
+    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
                                                                                          usa_features(),
                                                                                          hypothetical1_features())
 
-    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Tests = 1.1 * Population", test_scaler)
-    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Tests = 1.1 * Population", test_scaler)
+    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Tests = 1.1 * Population", train_scaler)
+    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Tests = 1.1 * Population", train_scaler)
 
     EU_tostore['SKLearn Predictions Hypothetical EU'] = Hypo1SK
     EU_tostore['Statsmodel Predictions Hypothetical EU'] = Hypo1SM
@@ -360,20 +384,20 @@ def run_main():
     EU_tostore.to_csv('Final EU Data.csv')
     EU_tostore.to_excel('Final EU Data.xlsx')
 
-    train_features, train_labels, test_features, test_labels, train_scaler, test_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
+    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
                                                                                          usa_features(),
                                                                                          testcountry_features(),
                                                                                          set2=TEST_COUNTRIES)
-    testSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries", test_scaler)
-    testSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries", test_scaler)
+    testSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries", train_scaler)
+    testSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries", train_scaler)
 
-    train_features, train_labels, test_features, test_labels, train_scaler, test_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
+    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
                                                                                          usa_features(),
                                                                                          hypothetical2_features(),
                                                                                          set2=TEST_COUNTRIES)
 
-    HypotestSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypoTest_countries", test_scaler)
-    HypotestSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypoTest_countries", test_scaler)
+    HypotestSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypoTest_countries", train_scaler)
+    HypotestSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypoTest_countries", train_scaler)
 
     test_tostore = load_data('Project Data', TEST_COUNTRIES)
 
