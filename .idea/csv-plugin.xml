@@ -3,13 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\EUclean.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Final EU Data.csv">
           <value>
             <Attribute>
@@ -66,21 +59,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Project Data\Predictions_new.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Project Data\Test Data.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Project Data\US States Data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -94,21 +73,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Project Data\europe.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Project Data\unused_data\europe.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Test Data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -137,13 +102,6 @@
           </value>
         </entry>
         <entry key="\Time Series Data\time_series_covid19_recovered_global.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\USAclean.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

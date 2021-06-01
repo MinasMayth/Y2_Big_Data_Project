@@ -88,7 +88,7 @@ def snsregressionplot(x, y, title, xlabel, ylabel):
     :return: scipy stats linear regression information for x and y
     """
     fig = plt.figure()
-    ax = sns.regplot(x=x, y=y.astype(float), ci=None, color="b")
+    ax = sns.regplot(x=x, y=y, ci=None, color="b")
     plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)),
              color='red')
     # ax.title.set_text(title)
@@ -117,8 +117,6 @@ def split_data(data, fraction=0.6):
     train_test split data
     :param data: pandas dataframe
     :param fraction: what fraction of data to split, default is 0.6 (60%)
-    :param index_of_dependent_feature: index of the dependent feature, which will be assigned to train_labels and
-    test_labels
     :return: train_features, train_labels, test_features, test_labels - data to be used for building model
     """
     # Train - Test split
@@ -170,19 +168,27 @@ def preprocess_data(data, features):
 
     # One-hot encode categorical variables (might be useful if we decide to use categorical variables)
     # data = pd.get_dummies(data)
-
     # Normalize data
-    x = data.values  # returns a numpy array
 
-    min_max_scaler = MinMaxScaler()
-    x_scaler = min_max_scaler.fit(x)
-    x_scaled = x_scaler.transform(x)
+    x = data.iloc[:, 0:-2]
+    y = data.iloc[:, -1]
+
+    x = x.values  # returns a numpy array
+    y = y.values
+
+    x_scaler = MinMaxScaler()
+    y_scaler = MinMaxScaler()
+    x_scaled = x_scaler.fit_transform(x)
+    y_scaled = y_scaler.fit_transform(y.reshape(-1, 1))
+
     data = pd.DataFrame(x_scaled)
+    data['Actual cases'] = y_scaled
 
     # Clean data by dropping NA rows
-    return data.dropna(), x_scaler
+    return data.dropna(), x_scaler, y_scaler
 
-def preprocess_testing_data(data, features, x_scaler):
+
+def preprocess_testing_data(data, features, x_scaler, y_scaler):
     """
     Select features, clean data, normalize and scale data
     :param data: dataset to preprocess
@@ -197,11 +203,17 @@ def preprocess_testing_data(data, features, x_scaler):
 
     # One-hot encode categorical variables (might be useful if we decide to use categorical variables)
     # data = pd.get_dummies(data)
-
     # Normalize data
-    x = data.values  # returns a numpy array
+    x = data.iloc[:, 0:-2]
+    y = data.iloc[:, -1]
+
+    x = x.values  # returns a numpy array
+    y = y.values
+
     x_scaled = x_scaler.transform(x)
+    y_scaled = y_scaler.transform(y.reshape(-1, 1))
     data = pd.DataFrame(x_scaled)
+    data['Actual cases'] = y_scaled
 
     # Clean data by dropping NA rows
     return data.dropna()
@@ -237,7 +249,7 @@ def main_split_and_preprocess(train, test, train_features, test_features, set1=U
         # clean_and_convert_data(train_data, train_features, "USAtrain")
 
         # Preprocess train data by cleaning and normalizing
-        train_features, train_scaler = preprocess_data(train_data, train_features)
+        train_features, x_scaler, y_scaler = preprocess_data(train_data, train_features)
 
         # Save the last column to train_labels, this should be the dependent feature
         train_labels = train_features.pop(train_features.columns[-1])
@@ -247,15 +259,16 @@ def main_split_and_preprocess(train, test, train_features, test_features, set1=U
 
         # clean_and_convert_data(test_data, test_features, "EUtest")
         # Select features and clean data
-        test_features = preprocess_testing_data(test_data, test_features, train_scaler)
+        test_features = preprocess_testing_data(test_data, test_features, x_scaler, y_scaler)
 
         test_labels = test_features.pop(test_features.columns[-1])
     else:
         train_features = data_dict[train]
-        train_data = preprocess_data(train_data, train_features)
-        train_features, train_labels, test_features, test_labels = split_data(train_data)
+        # train_data = preprocess_data(train_data, train_features)
+        # train_features, train_labels, test_features, test_labels = split_data(train_data)
+        return "Not implemented"
 
-    return train_features, train_labels, test_features, test_labels, train_scaler
+    return train_features, train_labels, test_features, test_labels, x_scaler, y_scaler
 
 
 def SK_build_model(train_features, train_labels):
@@ -294,7 +307,7 @@ def SM_build_model(train_features, train_labels):
     return model
 
 
-def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", dataset="N/A", scaler="N/A"):
+def predict_and_metrics(to_predict, actual_values, model, Xscaler, Yscaler, model_type="N/A", dataset="N/A"):
     """
     Perform predictions using a built linear regression model and display metrics for it
     Current metrics supported:
@@ -309,8 +322,10 @@ def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", data
     """
     predictions = model.predict(to_predict)  # model predictions
 
-    to_predict1, predictions = unscale_data(to_predict, predictions, scaler)
-    to_predict, actual_values = unscale_data(to_predict, actual_values, scaler)  # we need to unscale the data for plotting
+    to_predict, actual_values, predictions = unscale_data(to_predict, actual_values, predictions, Xscaler,
+                                                          Yscaler)  # we need to unscale the data for plotting
+
+    # to_predict, predictions = unscale_data(to_predict, predictions, scaler)  # we need to unscale the data for plotting
 
     print(snsregressionplot(actual_values, predictions,
                             "Predicted Cases vs Actual Cases (" + dataset + ")",
@@ -323,15 +338,31 @@ def predict_and_metrics(to_predict, actual_values, model, model_type="N/A", data
     return predictions
 
 
-def unscale_data(features, labels, scaler):
-    results = np.concatenate((features, labels[:, None]), axis=1)
+def unscale_data(features, labels, predictions, Xscaler, Yscaler):
+    # results = np.concatenate((features, labels[:, None]), axis=1)
 
-    rescaled_results = scaler.inverse_transform(results)
+    # print(results)
 
-    features = rescaled_results[:, 0:-2]
-    labels = rescaled_results[:, -1]
+    features = Xscaler.inverse_transform(features)
 
-    return features, labels
+    # print(features)
+    # features = rescaled_results[:, 0:-2]
+    # labels = rescaled_results[:, -1]
+
+    try:
+        labels = Yscaler.inverse_transform(labels.values.reshape(-1, 1))
+    except AttributeError:
+        labels = Yscaler.inverse_transform(labels.reshape(-1, 1))
+
+    try:
+        predictions = Yscaler.inverse_transform(predictions.values.reshape(-1, 1))
+    except AttributeError:
+        predictions = Yscaler.inverse_transform(predictions.reshape(-1, 1))
+
+    predictions = [item for sublist in predictions for item in sublist]
+    labels = [item for sublist in labels for item in sublist]
+
+    return features, labels, predictions
 
 
 def run_main():
@@ -343,15 +374,17 @@ def run_main():
     Train US Test EU
     """
 
-    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
-                                                                                         usa_features(),
-                                                                                         europe_features())
+    train_features, train_labels, test_features, test_labels, Xscaler, Yscaler = main_split_and_preprocess(US_DATA,
+                                                                                                           EUROPE_DATA,
+                                                                                                           usa_features(),
+                                                                                                           europe_features())
 
     SKlearn_model = SK_build_model(train_features, train_labels)
     SM_model = SM_build_model(train_features, train_labels)
 
-    SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, "SKLearn", "US", train_scaler)
-    SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, "Statsmodel", "US", train_scaler)
+    SKpredictionsUS = predict_and_metrics(train_features, train_labels, SKlearn_model, Xscaler, Yscaler, "SKLearn",
+                                          "US")
+    SMpredictionsUS = predict_and_metrics(train_features, train_labels, SM_model, Xscaler, Yscaler, "Statsmodel", "US")
 
     US_tostore = load_data('Project Data', US_DATA)
     US_tostore['SKLearn Predictions US'] = SKpredictionsUS
@@ -360,8 +393,8 @@ def run_main():
     US_tostore.to_csv('Final US Data.csv')
     US_tostore.to_excel('Final US Data.xlsx')
 
-    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "EU", train_scaler)
-    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "EU", train_scaler)
+    SKpredictionsEU = predict_and_metrics(test_features, test_labels, SKlearn_model, Xscaler, Yscaler, "SKLearn", "EU")
+    SMpredictionsEU = predict_and_metrics(test_features, test_labels, SM_model, Xscaler, Yscaler, "Statsmodel", "EU")
 
     EU_tostore = load_data('Project Data', EUROPE_DATA)
     EU_tostore['SKLearn Predictions EU'] = SKpredictionsEU
@@ -371,12 +404,17 @@ def run_main():
     Train US Test Hypothetical-1 (Tests = Population EU)
     """
 
-    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, EUROPE_DATA,
-                                                                                         usa_features(),
-                                                                                         hypothetical1_features())
+    train_features, train_labels, test_features, test_labels, a, b = main_split_and_preprocess(US_DATA,
+                                                                                                           EUROPE_DATA,
+                                                                                                           usa_features(),
+                                                                                                           hypothetical1_features())
 
-    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Tests = 1.1 * Population", train_scaler)
-    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Tests = 1.1 * Population", train_scaler)
+    Hypo1SK = predict_and_metrics(test_features, test_labels, SKlearn_model, Xscaler, Yscaler, "SKLearn",
+                                  "Tests = 1.1 * Population",
+                                  )
+    Hypo1SM = predict_and_metrics(test_features, test_labels, SM_model, Xscaler, Yscaler, "Statsmodel",
+                                  "Tests = 1.1 * Population",
+                                  )
 
     EU_tostore['SKLearn Predictions Hypothetical EU'] = Hypo1SK
     EU_tostore['Statsmodel Predictions Hypothetical EU'] = Hypo1SM
@@ -384,20 +422,25 @@ def run_main():
     EU_tostore.to_csv('Final EU Data.csv')
     EU_tostore.to_excel('Final EU Data.xlsx')
 
-    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
-                                                                                         usa_features(),
-                                                                                         testcountry_features(),
-                                                                                         set2=TEST_COUNTRIES)
-    testSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "Test_countries", train_scaler)
-    testSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "Test_countries", train_scaler)
+    train_features, train_labels, test_features, test_labels, a, b = main_split_and_preprocess(US_DATA,
+                                                                                                           TEST_COUNTRIES,
+                                                                                                           usa_features(),
+                                                                                                           testcountry_features(),
+                                                                                                           set2=TEST_COUNTRIES)
+    testSK = predict_and_metrics(test_features, test_labels, SKlearn_model, Xscaler, Yscaler, "SKLearn",
+                                 "Test_countries", )
+    testSM = predict_and_metrics(test_features, test_labels, SM_model, Xscaler, Yscaler, "Statsmodel", "Test_countries")
 
-    train_features, train_labels, test_features, test_labels, train_scaler = main_split_and_preprocess(US_DATA, TEST_COUNTRIES,
-                                                                                         usa_features(),
-                                                                                         hypothetical2_features(),
-                                                                                         set2=TEST_COUNTRIES)
+    train_features, train_labels, test_features, test_labels, a, b = main_split_and_preprocess(US_DATA,
+                                                                                                           TEST_COUNTRIES,
+                                                                                                           usa_features(),
+                                                                                                           hypothetical2_features(),
+                                                                                                           set2=TEST_COUNTRIES)
 
-    HypotestSK = predict_and_metrics(test_features, test_labels, SKlearn_model, "SKLearn", "HypoTest_countries", train_scaler)
-    HypotestSM = predict_and_metrics(test_features, test_labels, SM_model, "Statsmodel", "HypoTest_countries", train_scaler)
+    HypotestSK = predict_and_metrics(test_features, test_labels, SKlearn_model, Xscaler, Yscaler, "SKLearn",
+                                     "HypoTest_countries")
+    HypotestSM = predict_and_metrics(test_features, test_labels, SM_model, Xscaler, Yscaler, "Statsmodel",
+                                     "HypoTest_countries")
 
     test_tostore = load_data('Project Data', TEST_COUNTRIES)
 
