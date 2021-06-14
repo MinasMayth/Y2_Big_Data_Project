@@ -219,7 +219,7 @@ def preprocess_testing_data(data, features, x_scaler, y_scaler):
     return data.dropna()
 
 
-def main_split_and_preprocess(train, test, train_features, test_features, set1=US_DATA, set2=EUROPE_DATA):
+def main_split_and_preprocess(train, test, train_features, test_features,   set1=US_DATA, set2=EUROPE_DATA):
     """
     Main function to preprocess data and split into features and labels
     :param train: Data to train on
